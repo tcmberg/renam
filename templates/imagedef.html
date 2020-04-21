@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Upload Files</title>
+    <meta charset="utf-8">
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js">script></script>
+
+    <style>hr, h3 {padding-bottom: 20px;}canvas {background-color: #fffff;}</style>
+    <style>
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+
+    <form class="" action="/imagename" method="post">
+
+      <label for="back_images">Back:</label>
+      <input type="text" name="back_images" value="">
+
+    <button type="submit" name="button">Save</button>
+    </form>
+</div>
+<div>
+  <ul>
+    {% for item in data %}
+  <li>{{item}}</li>
+    {% endfor %}
+  </ul>
+
+</div>
+
+
+  </body>
+</html>
