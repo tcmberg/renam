@@ -1,72 +1,48 @@
-<html>
-<head>
-  <style>
-input[type=text], select {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
+{% extends "base.html "%}
 
-input[type=submit] {
-  width: 100%;
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button[type=submit] {
-  width: 100%;
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-input[type=submit]:hover {
-  background-color: #45a049;
-}
-
-button[type=submit]:hover {
-  background-color: #45a049;
-}
-
-div {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-  width: 250px;
-}
-
-</style>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.20/fc-3.3.0/fh-3.1.6/r-2.2.3/rg-1.1.1/rr-1.2.6/datatables.min.css"/>
-
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.20/fc-3.3.0/fh-3.1.6/r-2.2.3/rg-1.1.1/rr-1.2.6/datatables.min.js"></script>
+{% block content %}
 
 
+<section class="banner_area">
+  <div class="container bdr">
 
-</head>
-        <body>
-      <div class="container">
+    <div class="row">
+
+      <div class="col-lg-12">
+        <ul class="progressbar">
+            <li class="active">Upload image as zip</li>
+            <li class="active">Indentify Back images</li>
+            <li class="active">Upload your Excel file</li>
+            <li>Indentify Excel file</li>
+          </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+
+
+<div class="container">
         <div class="row">
-          <div class="col-sm">
-            <p>Select a CSV file</p>
-            <form method="post" action="/upload.html" enctype="multipart/form-data">
-                <p><input type="file" name="input_file" /></p>
-                <p><input type="submit" value="Process the file" /></p>
-            </form>
+          <div class="col-lg-12">
+          <h1>Upload your Excel file:</h1>
 
-            <h2>Please check if oke:</h2>
+          <form method="post" action="/upload.html" enctype="multipart/form-data" id="my-awesome-dropzone">
+                <input type="file" name="input_file" />
+                <input type="submit" value="Process the file" />
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+
+<div class="container">
+          <div class="row">
+              <div class="col-lg-12">
+            <h2>Preview of uploaded file:</h2>
 
             <div>
             {% for table in tables %}
@@ -86,9 +62,16 @@ div {
 </div>
 </div>
 
+
+</section>
+
+<section>
+
+
+
 <div class="container">
   <div class="row">
-    <div class="col-sm">
+    <div class="col-lg-12">
 
             <h2>Please give inputs:</h2>
             <p>GTIN:</p>
@@ -135,6 +118,6 @@ div {
 </div>
 </div>
 
+</section>
 
-        </body>
-</html>
+{% endblock %}

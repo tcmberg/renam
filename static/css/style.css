@@ -472,10 +472,13 @@ body a:focus, body a:hover, body .btn:focus, body .btn:hover, body button:focus,
   z-index: 999;
   position: absolute;
   padding: 40px 255px 0;
+
 }
 .main_header_area .navbar {
   padding: 0;
   width: 100%;
+  background-color: #393e46;
+  color: #f2f2f2;
 }
 .main_header_area .navbar .navbar-brand {
   padding: 0;
@@ -676,6 +679,8 @@ body a:focus, body a:hover, body .btn:focus, body .btn:hover, body button:focus,
 }
 .main_header_area .navbar .right_nav li {
   display: inline-block;
+  position: relative;
+  float:right;
 }
 .main_header_area .navbar .right_nav li a {
   color: #282828;
@@ -1074,11 +1079,9 @@ body a:focus, body a:hover, body .btn:focus, body .btn:hover, body button:focus,
   }
   .main_header_area .navbar .navbar-nav li.dropdown .dropdown-menu li a {
     border: 0;
-    color: #fff;
     margin: 0 10px;
   }
   .main_header_area .navbar .navbar-nav li.dropdown .dropdown-menu li a:hover, .main_header_area .navbar .navbar-nav li.dropdown .dropdown-menu li a:focus, .main_header_area .navbar .navbar-nav li.dropdown .dropdown-menu li a.active {
-    color: #fff;
     border: 0;
     padding: 0 20px;
     background-color: transparent;
@@ -1090,6 +1093,7 @@ body a:focus, body a:hover, body .btn:focus, body .btn:hover, body button:focus,
     position: absolute;
     right: 70px;
     top: 0;
+    float:right;
   }
   .main_header_area .navbar .right_nav li .get_m {
     display: inline-block;
