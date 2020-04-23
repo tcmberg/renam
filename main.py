@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, render_template, redirect, url_for, session, send_file
+from flask import Flask, make_response, request, render_template, redirect, url_for, session, send_file, after_this_request
 from werkzeug.utils import secure_filename
 #import tempfile
 #from processing import process_data
@@ -42,6 +42,14 @@ def allowed_file(filename):
 
 @app.route('/')
 def root_htmlzaio():
+
+
+    for filename in os.listdir(MAIN_FOLDER):
+        path_zip = os.path.join(MAIN_FOLDER + filename)
+        if '.zip' in filename:
+            os.remove(path_zip)
+
+
     return render_template('image_dropzone.html')
 
 @app.route('/testing', methods=['GET', 'POST'])
@@ -249,27 +257,15 @@ def test():
 def download_front_images():
     zip = 'front_images.zip'
     path = os.path.join(MAIN_FOLDER + zip)
-    file_handle = open(path, 'r')
 
-    @after_this_request
-    def remove_file()
-        os.remove(path)
-        return reponse
-
-    return send_file(file_handle, as_attachment=True)
+    return send_file(path, as_attachment=True)
 
 @app.route('/download-back.html', methods=["GET", "POST"])
 def download_back_images():
     zip ='back_images.zip'
     path = os.path.join(MAIN_FOLDER + zip)
-    file_handle = open(path, 'r')
 
-    @after_this_request
-    def remove_file()
-        os.remove(path)
-        return reponse
-
-    return send_file(file_handle, as_attachment=True)
+    return send_file(path, as_attachment=True)
 
 
 
