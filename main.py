@@ -32,6 +32,7 @@ front_folder = './var/www/temp/images/front_images/'
 back_folder = './var/www/temp/images/back_images/'
 image_container = './var/www/temp/image/image_container/'
 MAIN_FOLDER = './'
+CLEAN_FOLDER = '/home/sofzone/'
 
 
 
@@ -258,14 +259,14 @@ def test():
 @app.route('/download-front.html', methods=["GET", "POST"])
 def download_front_images():
     zip = 'front_images.zip'
-    path = os.path.join(MAIN_FOLDER + zip)
+    path = os.path.join(CLEAN_FOLDER + zip)
 
     return send_file(path, as_attachment=True)
 
 @app.route('/download-back.html', methods=["GET", "POST"])
 def download_back_images():
     zip = 'back_images.zip'
-    path = os.path.join(MAIN_FOLDER + zip)
+    path = os.path.join(CLEAN_FOLDER + zip)
 
     return send_file(path, as_attachment=True)
 
