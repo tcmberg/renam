@@ -303,7 +303,7 @@ def download_front_images():
             app.logger.error("Error removing or closing downloaded file handle", error)
         return response
 
-    return send_file(file_handle, as_attachment=True)
+    return send_file(file_handle)
 
 @app.route('/download-back.html', methods=["GET", "POST"])
 def download_back_images():
@@ -319,7 +319,7 @@ def download_back_images():
             app.logger.error("Error removing or closing downloaded file handle", error)
         return response
 
-    return send_file(file_handle2, as_attachment=True)
+    return send_file(file_handle2)
 
 
 
