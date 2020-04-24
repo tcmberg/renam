@@ -31,7 +31,7 @@ ALLOWED_EXTENSIONS = set(['zip'])
 front_folder = './var/www/temp/images/front_images/'
 back_folder = './var/www/temp/images/back_images/'
 image_container = './var/www/temp/image/image_container/'
-MAIN_FOLDER = './'
+MAIN_FOLDER = '/home/sofzone/'
 
 
 
