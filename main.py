@@ -44,10 +44,10 @@ def allowed_file(filename):
 def root_htmlzaio():
     try:
         for filename in os.listdir(MAIN_FOLDER):
-        path_zip = os.path.join(MAIN_FOLDER + filename)
-        if 'back_images.zip' in filename or 'front_images.zip' in filename:
-            back = os.path.join(MAIN_FOLDER + 'back_images.zip')
-            front = os.path.join(MAIN_FOLDER + 'front_images.zip')
+            path_zip = os.path.join(MAIN_FOLDER + filename)
+            if 'back_images.zip' in filename or 'front_images.zip' in filename:
+                back = os.path.join(MAIN_FOLDER + 'back_images.zip')
+                front = os.path.join(MAIN_FOLDER + 'front_images.zip')
 
             os.remove(back)
             os.remove(front)
