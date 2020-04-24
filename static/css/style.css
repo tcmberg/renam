@@ -231,7 +231,6 @@ body i:before, body .platform_facilitates i.platform_row:after, .platform_facili
 }
 body a, body .btn, body button {
   outline: none;
-  color: #fff;
   transition: all 300ms linear 0s;
 }
 body a:before, body .platform_facilitates a.platform_row:after, .platform_facilitates body a.platform_row:after, body .meet_yop .meet_row a.yop_video:after, .meet_yop .meet_row body a.yop_video:after, body a:after, body .btn:before, body .platform_facilitates .btn.platform_row:after, .platform_facilitates body .btn.platform_row:after {
@@ -519,7 +518,7 @@ body a:focus, body a:hover, body .btn:focus, body .btn:hover, body button:focus,
   position: absolute;
   top: -25px;
   left: 25px;
-  color: #fff;
+
 }
 @media (min-width: 991px) {
   .main_header_area .navbar .navbar_supported ul li.dropdown .dropdown-menu {

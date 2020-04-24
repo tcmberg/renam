@@ -256,14 +256,14 @@ def test():
 @app.route('/download-front.html', methods=["GET", "POST"])
 def download_front_images():
     zip = 'front_images.zip'
-    path = os.path.join(MAIN_FOLDER + zip)
+    path = os.path.join('/home/sofzone/' + zip)
 
     return send_file(path, as_attachment=True)
 
 @app.route('/download-back.html', methods=["GET", "POST"])
 def download_back_images():
     zip ='back_images.zip'
-    path = os.path.join(MAIN_FOLDER + zip)
+    path = os.path.join('/home/sofzone/' + zip)
 
     return send_file(path, as_attachment=True)
 
