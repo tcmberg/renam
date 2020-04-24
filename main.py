@@ -31,7 +31,7 @@ ALLOWED_EXTENSIONS = set(['zip'])
 front_folder = './var/www/temp/images/front_images/'
 back_folder = './var/www/temp/images/back_images/'
 image_container = './var/www/temp/image/image_container/'
-MAIN_FOLDER = '/home/sofzone/'
+MAIN_FOLDER = './'
 
 
 
@@ -241,8 +241,8 @@ def test():
                         continue
 
 
-        shutil.make_archive('front_images', 'zip', SUCCESS_F)
-        shutil.make_archive('back_images', 'zip', SUCCESS_B)
+        shutil.make_archive('front_images', 'zip', SUCCESS_F, MAIN_FOLDER)
+        shutil.make_archive('back_images', 'zip', SUCCESS_B, MAIN_FOLDER)
         shutil.rmtree(front_folder)
         shutil.rmtree(back_folder)
         shutil.rmtree(image_container)
