@@ -44,11 +44,11 @@ def allowed_file(filename):
 @app.route('/')
 def root_htmlzaio():
     try:
-        for filename in os.listdir(MAIN_FOLDER):
-            path_zip = os.path.join(MAIN_FOLDER + filename)
+        for filename in os.listdir(CLEAN_FOLDER):
+            path_zip = os.path.join(CLEAN_FOLDER + filename)
             if 'back_images.zip' in filename or 'front_images.zip' in filename:
-                back = os.path.join(MAIN_FOLDER + 'back_images.zip')
-                front = os.path.join(MAIN_FOLDER + 'front_images.zip')
+                back = os.path.join(CLEAN_FOLDER + 'back_images.zip')
+                front = os.path.join(CLEAN_FOLDER + 'front_images.zip')
 
             os.remove(back)
             os.remove(front)
