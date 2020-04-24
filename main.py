@@ -293,13 +293,26 @@ def test():
 def download_front_images():
     zip = 'front_images.zip'
     path = os.path.join(MAIN_FOLDER + zip)
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(path)
+        except Exception as error:
+            app.logger.error("Error removing or closing downloaded file handle", error)
+        return response
 
     return send_file(path, as_attachment=True)
 
 @app.route('/download-back.html', methods=["GET", "POST"])
 def download_back_images():
     zip ='back_images.zip'
-    path = os.path.join(MAIN_FOLDER + zip)
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(path)
+        except Exception as error:
+            app.logger.error("Error removing or closing downloaded file handle", error)
+        return response
 
     return send_file(path, as_attachment=True)
 
