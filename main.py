@@ -33,7 +33,7 @@ back_folder = './var/www/temp/images/back_images/'
 image_container = './var/www/temp/image/image_container/'
 MAIN_FOLDER = './'
 
-print(MAIN_FOLDER)
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -52,7 +52,7 @@ def root_htmlzaio():
             os.remove(back)
             os.remove(front)
     except:
-        continue
+        print('An error occurred.')
 
 
 
