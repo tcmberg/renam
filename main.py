@@ -42,6 +42,19 @@ def allowed_file(filename):
 
 @app.route('/')
 def root_htmlzaio():
+    try:
+        for filename in os.listdir(MAIN_FOLDER):
+        path_zip = os.path.join(MAIN_FOLDER + filename)
+        if 'back_images.zip' in filename or 'front_images.zip' in filename:
+            back = os.path.join(MAIN_FOLDER + 'back_images.zip')
+            front = os.path.join(MAIN_FOLDER + 'front_images.zip')
+
+            os.remove(back)
+            os.remove(front)
+    except:
+        continue
+
+
 
     return render_template('image_dropzone.html')
 
@@ -88,53 +101,6 @@ def testing_html():
 
     return render_template('image_dropzone.html')
 
-# @app.route('/testing', methods=['GET', 'POST'])
-# def testing_html():
-#     foldernames()
-#     if request.method == 'POST':
-#         # check if the post request has the file part
-#         if 'file' not in request.files:
-#             return redirect(request.url)
-#
-#         file = request.files['file']
-#
-#         # if user does not select file, browser also
-#         # submit a empty part without filename
-#         if file.filename == '':
-#             flash('No selected file')
-#             return redirect(request.url)
-#         if file and allowed_file(file.filename):
-#             filename = secure_filename(file.filename)
-#             file.save(os.path.join(UPLOAD_FOLDER, filename))
-#             zip_ref = zipfile.ZipFile(os.path.join(UPLOAD_FOLDER, filename), 'r')
-#             zip_ref.extractall(UPLOAD_FOLDER)
-#             zip_ref.close()
-#             image_list = []
-#             i = 0
-#             for filename in os.listdir(UPLOAD_FOLDER):
-#                 filename_or = os.path.splitext(filename)[0]
-#                 extension = os.path.splitext(filename)[1]
-#                 clean_name = re.sub("[^a-zA-Z0-9_]", "", filename_or).lower() + extension.lower()
-#
-#                 #print(clean_name, extension)
-#                 #print(lower(clean_name))
-#
-#                 src = os.path.join(UPLOAD_FOLDER, filename)
-#                 dst = os.path.join(UPLOAD_FOLDER, clean_name)
-#                 #os.rename(src, dst)
-#                 shutil.move(src,dst)
-#                 img_container = os.path.join(image_container, clean_name)
-#                 image_list.append(clean_name)
-#                 #print(img_container)
-#                 if '.jpg' in clean_name or '.png' in clean_name:
-#                     shutil.copyfile(dst, img_container)
-#             #print(image_list)
-#                 #shutil.copy(dst, image_container)
-#
-#
-#         #return render_template('image_.html')
-#             session['image_list'] = image_list
-#             return render_template('image_processed.html', data=image_list)
 
 @app.route('/continue')
 def continue_html():
@@ -293,33 +259,15 @@ def test():
 def download_front_images():
     zip = 'front_images.zip'
     path = os.path.join(MAIN_FOLDER + zip)
-    file_handle = open(path, 'r')
-    @after_this_request
-    def remove_file(response):
-        try:
-            os.remove(path)
-            file_handle.close()
-        except Exception as error:
-            app.logger.error("Error removing or closing downloaded file handle", error)
-        return response
 
-    return send_file(file_handle, as_attachment=True, attachment_filename='front_images.zip')
+    return send_file(path, as_attachment=True)
 
 @app.route('/download-back.html', methods=["GET", "POST"])
 def download_back_images():
     zip = 'back_images.zip'
     path = os.path.join(MAIN_FOLDER + zip)
-    file_handle2 = open(path, 'r')
-    @after_this_request
-    def remove_file(response):
-        try:
-            os.remove(path)
-            file_handle2.close()
-        except Exception as error:
-            app.logger.error("Error removing or closing downloaded file handle", error)
-        return response
 
-    return send_file(file_handle2, as_attachment=True, attachment_filename='back_images.zip')
+    return send_file(path, as_attachment=True)
 
 
 
