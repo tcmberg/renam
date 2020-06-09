@@ -57,11 +57,7 @@ def allowed_file(filename):
 
 @app.route('/')
 def root_htmlzaio():
-<<<<<<< HEAD
-    print(SUCCESS_F)
-=======
 
->>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
     try:
         for filename in os.listdir(CLEAN_FOLDER):
             if 'back_images.zip' in filename or 'front_images.zip' in filename:
@@ -165,16 +161,13 @@ def foldernames():
     if not os.path.exists(SUCCESS_B):
         os.makedirs(SUCCESS_B)
         print('SUCCESS_B folder created.')
-<<<<<<< HEAD
     if not os.path.exists(CSV_FOLDER):
         os.makedirs(CSV_FOLDER)
         print('CSV_FOLDER folder created.')
-
-=======
     if not os.path.exists(MAIN_IMAGE):
         os.makedirs(MAIN_IMAGE)
         print('MAIN_IMAGE folder created.')
->>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
+
 
 @app.route('/imagename', methods=['GET', 'POST'])
 def rename_front(suffix):
@@ -205,16 +198,10 @@ def uploadfile():
     elif request.method == 'POST':
         input_file = request.files["input_file"]
         df = pd.read_excel(input_file, delimiter=',')
-
-<<<<<<< HEAD
         df = df[df.columns.drop(list(df.filter(regex='koop|omschrijv|description|lengte|Unnamed|harmonised|btw')))]
 
         df.to_csv(CSV_FOLDER + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
-        #test(df)
-        #return render_template('upload.html')
-=======
         df.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
->>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
         images = [x for x in os.listdir(image_container)[:3]]
         return render_template('upload.html', tables=[df.to_html(classes='data', max_rows=3)], titles=df.columns.values, data=images)
 
@@ -235,15 +222,12 @@ def test():
         database2.sort_values(input_1, ascending=True)
         database2.drop_duplicates(subset=[input_1])
         df_update = database2.replace(to_replace="[^a-zA-Z0-9_]", value="",regex=True)
-<<<<<<< HEAD
         #print(df_update)
         csv_filename = 'test.csv'
         csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
         df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
-=======
 
         df_update.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
->>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
 
 
 
@@ -311,11 +295,8 @@ def download_back_images():
     return send_file(path, as_attachment=True)
 
 
-<<<<<<< HEAD
 if __name__ == '__main__':
     app.run(debug=False)
-=======
 
 
 
->>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
