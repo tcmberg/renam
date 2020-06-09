@@ -1,6 +1,6 @@
 from flask import Flask, make_response, request, render_template, redirect, url_for, session, send_file, after_this_request
 from werkzeug.utils import secure_filename
-#import tempfile
+import tempfile
 #from processing import process_data
 import pandas as pd
 import csv
@@ -23,16 +23,27 @@ app.secret_key = 'xyz'
 #app.debug = True
 #app.config["DEBUG"] = True
 
-CSV_FOLDER = './var/www/temp/output_list.csv'
-UPLOAD_FOLDER = './var/www/temp/images/'
-SUCCESS_F = './var/www/temp/success/f/'
-SUCCESS_B = './var/www/temp/success/b/'
+#FOlDERS
+
+USER_1 = './USER_1'
+
+USER = USER_1
+
+CSV_FOLDER = os.path.join(USER + '/csv/')
+UPLOAD_FOLDER = os.path.join(USER +'/images/')
+SUCCESS_F =  os.path.join(USER + '/success/f/')
+SUCCESS_B =  os.path.join(USER + '/success/b/')
 ALLOWED_EXTENSIONS = set(['zip'])
-front_folder = './var/www/temp/images/front_images/'
-back_folder = './var/www/temp/images/back_images/'
-image_container = './var/www/temp/image/image_container/'
+front_folder =  os.path.join(USER + '/images/front_images/')
+back_folder =  os.path.join(USER + '/images/back_images/')
+image_container =  os.path.join(USER + '/image/image_container/')
+
+
 MAIN_FOLDER = './'
 CLEAN_FOLDER = '/home/sofzone/'
+
+
+
 
 
 
@@ -41,8 +52,10 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+
 @app.route('/')
 def root_htmlzaio():
+    print(SUCCESS_F)
     try:
         for filename in os.listdir(CLEAN_FOLDER):
             path_zip = os.path.join(CLEAN_FOLDER + filename)
@@ -53,7 +66,7 @@ def root_htmlzaio():
             os.remove(back)
             os.remove(front)
     except:
-        print('An error occurred.')
+        print('All cleaned up!')
 
 
 
@@ -70,10 +83,20 @@ def testing_html():
             if '.zip' in filename:
 
                 zip_ref = zipfile.ZipFile(os.path.join(MAIN_FOLDER, filename), 'r')
-                zip_ref.extractall(UPLOAD_FOLDER)
-                zip_ref.close()
-                os.remove(path_zip)
-                image_list = []
+                #zip_ref.extractall(UPLOAD_FOLDER)
+                #zip_ref.close()
+                #os.remove(path_zip)
+                #image_list = []
+
+                with zip_ref as zip:
+                    for zip_info in zip.infolist():
+                        if zip_info.filename[-1] == '/':
+                            continue
+                        zip_info.filename = os.path.basename(zip_info.filename)
+                        zip.extract(zip_info, UPLOAD_FOLDER)
+                    zip_ref.close()
+                    os.remove(path_zip)
+                    image_list = []
 
                 #ZIP FILE > ORGANIZE
                 for filename in os.listdir(UPLOAD_FOLDER):
@@ -102,7 +125,6 @@ def testing_html():
 
     return render_template('image_dropzone.html')
 
-
 @app.route('/continue')
 def continue_html():
     return render_template('image_processed.html', data=session['image_list'])
@@ -119,6 +141,8 @@ def frontbackimages():
 
     #return redirect('/process.html')
     return render_template('/index.html')
+
+
 
 def foldernames():
     if not os.path.exists(UPLOAD_FOLDER):
@@ -139,6 +163,10 @@ def foldernames():
     if not os.path.exists(SUCCESS_B):
         os.makedirs(SUCCESS_B)
         print('SUCCESS_B folder created.')
+    if not os.path.exists(CSV_FOLDER):
+        os.makedirs(CSV_FOLDER)
+        print('CSV_FOLDER folder created.')
+
 
 @app.route('/imagename', methods=['GET', 'POST'])
 def rename_front(suffix):
@@ -176,7 +204,9 @@ def uploadfile():
         input_file = request.files["input_file"]
         df = pd.read_excel(input_file, delimiter=',')
 
-        df.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
+        df = df[df.columns.drop(list(df.filter(regex='koop|omschrijv|description|lengte|Unnamed|harmonised|btw')))]
+
+        df.to_csv(CSV_FOLDER + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
         #test(df)
         #return render_template('upload.html')
         images = [x for x in os.listdir(image_container)[:3]]
@@ -195,21 +225,20 @@ def test():
         input_2 = request.form.get('input_2')
         col_list = [input_gtin, input_1, input_2]
 
-        database2 = pd.read_csv('./var/www/temp/' + 'test.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>4}'.format(x).lower(), input_2: lambda x: '{0:0>3}'.format(x).lower()})
+        database2 = pd.read_csv(CSV_FOLDER + 'test.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>4}'.format(x).lower(), input_2: lambda x: '{0:0>3}'.format(x).lower()})
         database2.sort_values(input_1, ascending=True)
         database2.drop_duplicates(subset=[input_1])
         df_update = database2.replace(to_replace="[^a-zA-Z0-9_]", value="",regex=True)
         #print(df_update)
-        df_update.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
+        csv_filename = 'test.csv'
+        csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
+        df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
 
 
 
-        with open('./var/www/temp/' + 'test.csv') as f, open('./var/www/temp/' + 'output_list.csv', 'w', newline='') as f_out:
+        with open(CSV_FOLDER + 'test.csv') as f:
             reader = csv.reader(f, delimiter=',')
-            writer = csv.writer(f_out, delimiter=',')
 
-            new_list = []
-            gtin_list = []
             for row in reader:
                 gtin = row[0]
                 input1 = row[1]
@@ -250,7 +279,6 @@ def test():
         shutil.rmtree(UPLOAD_FOLDER)
         shutil.rmtree(SUCCESS_F)
         shutil.rmtree(SUCCESS_B)
-            #writer.writerows(zip(new_list, gtin_list))
 
 
         return render_template('/thank-you.html')
@@ -258,6 +286,7 @@ def test():
 
 @app.route('/download-front.html', methods=["GET", "POST"])
 def download_front_images():
+
     zip = 'front_images.zip'
     path = os.path.join(CLEAN_FOLDER + zip)
 
@@ -271,7 +300,5 @@ def download_back_images():
     return send_file(path, as_attachment=True)
 
 
-
-
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)

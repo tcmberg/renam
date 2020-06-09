@@ -30,7 +30,7 @@
 
           <form method="post" action="/upload.html" enctype="multipart/form-data" id="my-awesome-dropzone">
                 <input type="file" name="input_file" />
-                <input type="submit" value="Process the file" />
+                <input type="submit" class="theme_btn" value="Process the file" />
             </form>
           </div>
         </div>
@@ -74,37 +74,56 @@
     <div class="col-lg-12">
 
             <h2>Please give inputs:</h2>
-            <p>GTIN:</p>
+
+
+<table style="width:100%">
+
+
+
           <form class="form-inline" method="POST" action="/upload2.html">
+          <tr style="height:55px;">
           <div id="GTIN" style="margin-bottom:25px;">
-          <label for="gtin_in">Choose GTIN:</label>
-          <select name="gtin_in"  method="GET" action="/">
+
+          <td><label for="gtin_in">Choose GTIN:</label></td>
+          <td><select name="gtin_in"  method="GET" action="/">
               {% for title in titles %}
               <option value="{{title}}" SELECTED>{{title}}</option>
               {% endfor %}
-          </select>
+          </select></td>
           </div>
+          </tr>
 
+          <tr style="height:55px;">
           <div>
-
-
-          <label for="input_1">Choose SKU:</label>
-          <select name="input_1"  method="GET" action="/">
+          <td><label for="input_1">Choose SKU:</label></td>
+          <td><select name="input_1"  method="GET" action="/">
               {% for title in titles %}
               <option value="{{title}}" SELECTED>{{title}}</option>
               {% endfor %}
-          </select>
-
-          <label for="input_2">Choose COLOR:</label>
-          <select name="input_2"  method="GET" action="/">
-              {% for title in titles %}
-              <option value="{{title}}" SELECTED>{{title}}</option>
-              {% endfor %}
-          </select>
-
-          <button type="submit" name="button">Save</button>
-          </form>
+          </select></td>
           </div>
+          </tr>
+
+          <tr style="height:55px;">
+          <div>
+          <td><label for="input_2">Choose COLOR:</label></td>
+          <td><select name="input_2"  method="GET" action="/">
+              {% for title in titles %}
+              <option value="{{title}}" SELECTED>{{title}}</option>
+              {% endfor %}
+          </select></td>
+          </div>
+          </tr>
+
+          <tr>
+          <div>
+          <td></td>
+          <td><button type="submit" class="theme_btn" name="button">Save</button></td>
+          </div>
+          </tr>
+          </form>
+
+</table>
 
           <div>
               {% for item in images %}

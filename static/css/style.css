@@ -49,7 +49,7 @@ Table of Content:
 @import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800&display=swap");
 
 .theme_btn {
-  color: #fffff;
+  color: #fff;
   text-align: center;
   font: 400 18px/50px "Poppins", sans-serif;
   display: inline-block;
@@ -58,13 +58,22 @@ Table of Content:
   z-index: 1;
   border-radius: 5px;
   min-width: 181px;
+  border-width: 0px;
 }
+
+.table {
+  margin: auto;
+  width: calc(100% -40px);
+}
+
 .theme_btn:hover, .theme_btn:focus {
-  background: #1be394;
-  #color: #000;
+  background: darkblue;
+  color: #fff;
 }
 
-
+.dataframe data {
+  float:left;
+}
 
 
 /* CUSTOM CSS */
@@ -196,6 +205,8 @@ Table of Content:
 /*Prefix Styles*/
 body {
   font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding:0;
   /*Section Fix*/
   /*Ancore*/
 }
@@ -716,7 +727,7 @@ body a:focus, body a:hover, body .btn:focus, body .btn:hover, body button:focus,
 .banner_area {
   display: block;
   overflow: hidden;
-  padding-top: 240px;
+  padding-top: 180px;
 }
 .banner_area .bdr {
   padding-bottom: 65px;

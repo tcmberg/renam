@@ -1,7 +1,7 @@
 
 
 {% extends "./base.html" %}
-
+{% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
 
   <!-- Header Area -->
@@ -29,29 +29,14 @@
     <div class="row">
       <div class="col-lg-12" style="text-align:center">
 
-        <form class="" action="/imagename" method="post">
-
-          <label for="back_images">Please enter the indentifier for back images:</label>
-
-          <input type="text" name="back_images" value="">
-          <button type="submit" class="theme_btn" name="button">Save & continue</button>
+        <form class="form-signin" action="/signup" method="post">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.password) }}
+        <button type="submit" name="button">Sign in</button>
         </form>
-      </div>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12" style="text-align:center">
-        {% for item in data %}
-      <li>{{item}}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-</div>
-
-
-    </div>
-</div>
 
 
 
