@@ -8,6 +8,7 @@ import os
 import zipfile
 import shutil
 import re
+import glob
 
 from flask_dropzone import Dropzone
 
@@ -41,6 +42,7 @@ image_container =  os.path.join(USER + '/image/image_container/')
 
 MAIN_FOLDER = './'
 CLEAN_FOLDER = '/home/sofzone/'
+MAIN_IMAGE = './var/www/temp/image/'
 
 
 
@@ -55,16 +57,16 @@ def allowed_file(filename):
 
 @app.route('/')
 def root_htmlzaio():
+<<<<<<< HEAD
     print(SUCCESS_F)
+=======
+
+>>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
     try:
         for filename in os.listdir(CLEAN_FOLDER):
-            path_zip = os.path.join(CLEAN_FOLDER + filename)
             if 'back_images.zip' in filename or 'front_images.zip' in filename:
-                back = os.path.join(CLEAN_FOLDER + 'back_images.zip')
-                front = os.path.join(CLEAN_FOLDER + 'front_images.zip')
+                os.remove(filename)
 
-            os.remove(back)
-            os.remove(front)
     except:
         print('All cleaned up!')
 
@@ -163,33 +165,33 @@ def foldernames():
     if not os.path.exists(SUCCESS_B):
         os.makedirs(SUCCESS_B)
         print('SUCCESS_B folder created.')
+<<<<<<< HEAD
     if not os.path.exists(CSV_FOLDER):
         os.makedirs(CSV_FOLDER)
         print('CSV_FOLDER folder created.')
 
+=======
+    if not os.path.exists(MAIN_IMAGE):
+        os.makedirs(MAIN_IMAGE)
+        print('MAIN_IMAGE folder created.')
+>>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
 
 @app.route('/imagename', methods=['GET', 'POST'])
 def rename_front(suffix):
-    #foldernames()
     param = suffix
-    my_file = CSV_FOLDER
-    #print(UPLOAD_FOLDER)
-    #suffix = param
+
     for filename in os.listdir(image_container):
         or_name = os.path.splitext(filename)[0]
         front_image_list = []
-        back_image_list = []
-        #print(param)
-        if param in or_name[-4:]:
+
+        if param in or_name[-9:]:
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(back_folder, filename)
             shutil.copyfile(src, dst_source)
-            #shutil.copyfile(src, dst_source)
-            #print(src, dst_source)
+
         else:
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(front_folder, filename)
-            #print(f'not greater {src}, {dst_source}')
             shutil.copyfile(src, dst_source)
     return front_image_list
 
@@ -204,11 +206,15 @@ def uploadfile():
         input_file = request.files["input_file"]
         df = pd.read_excel(input_file, delimiter=',')
 
+<<<<<<< HEAD
         df = df[df.columns.drop(list(df.filter(regex='koop|omschrijv|description|lengte|Unnamed|harmonised|btw')))]
 
         df.to_csv(CSV_FOLDER + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
         #test(df)
         #return render_template('upload.html')
+=======
+        df.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
+>>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
         images = [x for x in os.listdir(image_container)[:3]]
         return render_template('upload.html', tables=[df.to_html(classes='data', max_rows=3)], titles=df.columns.values, data=images)
 
@@ -229,10 +235,15 @@ def test():
         database2.sort_values(input_1, ascending=True)
         database2.drop_duplicates(subset=[input_1])
         df_update = database2.replace(to_replace="[^a-zA-Z0-9_]", value="",regex=True)
+<<<<<<< HEAD
         #print(df_update)
         csv_filename = 'test.csv'
         csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
         df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
+=======
+
+        df_update.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
+>>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
 
 
 
@@ -300,5 +311,11 @@ def download_back_images():
     return send_file(path, as_attachment=True)
 
 
+<<<<<<< HEAD
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
+=======
+
+
+
+>>>>>>> 9b60b09f3effd98286240df7c8049c499fcdcbfe
