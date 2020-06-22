@@ -40,27 +40,26 @@
 
 
 <div class="container">
-          <div class="row">
-              <div class="col-lg-12">
+
             <h2>Preview of uploaded file:</h2>
 
-            <div>
+            <div style="overflow-x:auto;">
             {% for table in tables %}
                {{titles[loop.index]}}
                {{ table|safe }}
             {% endfor %}
             </div>
-          </div>
 
 
-          <div>
+
+          <div style="overflow-x:auto;">
 
             {% for item in data %}
                 <li>{{item | safe}}</li>
             {% endfor %}
         </div>
 </div>
-</div>
+
 
 
 </section>

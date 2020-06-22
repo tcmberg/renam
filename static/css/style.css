@@ -71,8 +71,32 @@ Table of Content:
   color: #fff;
 }
 
+.dataframe {
+  width:100%;
+  color: black;
+  float: left;
+  margin-left: -250px;
+  border: 1px solid black;
+  border-collapse: collapse;
+  height: 25px;
+  text-align: left;
+  font-size: 14px;
+  overflow-x:auto;
+}
+.dataframe tbody, thead, th, td, tr {
+  height: 25px;
+  width: 100%;
+  vertical-align: bottom;
+  padding: 5px;
+}
+
+.dataframe th {
+  background-color: lightblue;
+}
+
+
 .dataframe data {
-  float:left;
+  width: 100%;
 }
 
 
