@@ -58,6 +58,7 @@ def allowed_file(filename):
 @app.route('/')
 def root_htmlzaio():
 
+
     try:
         for filename in os.listdir(CLEAN_FOLDER):
             if 'back_images.zip' in filename or 'front_images.zip' in filename:
@@ -66,7 +67,11 @@ def root_htmlzaio():
     except:
         print('All cleaned up!')
 
-
+    try:
+        if os.path.exists(USER_1):
+            shutil.rmtree(USER_1)
+    except:
+        print('nothing to see')
 
     return render_template('image_dropzone.html')
 
