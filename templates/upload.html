@@ -29,9 +29,26 @@
           <h1>Upload your Excel file:</h1>
 
           <form method="post" action="/upload.html" enctype="multipart/form-data" id="my-awesome-dropzone">
-                <input type="file" name="input_file" />
+    <table>
+      <tr>
+          <td><label class="file">
+            <input type="file" id="file" name="input_file" aria-label="File browser example">
+            <span class="file-custom"></span>
+          </label></td>
+
+
+
+          <td><input type="submit" class="theme_btn" value="Upload" /></td>
+    </tr>
+</table>
+
+        </form>
+
+          <!-- <form method="post" action="/upload.html" enctype="multipart/form-data" id="my-awesome-dropzone">
+
+                <input type="file" name="input_file" id="file" aria-label="File browser example" />
                 <input type="submit" class="theme_btn" value="Process the file" />
-            </form>
+            </form> -->
           </div>
         </div>
       </div>
@@ -84,7 +101,7 @@
           <div id="GTIN" style="margin-bottom:25px;">
 
           <td><label for="gtin_in">Choose GTIN:</label></td>
-          <td><select name="gtin_in"  method="GET" action="/">
+          <td><select class="select" name="gtin_in"  method="GET" action="/">
               {% for title in titles %}
               <option value="{{title}}" SELECTED>{{title}}</option>
               {% endfor %}
@@ -95,7 +112,7 @@
           <tr style="height:55px;">
           <div>
           <td><label for="input_1">Choose SKU:</label></td>
-          <td><select name="input_1"  method="GET" action="/">
+          <td><select name="input_1" class="select" method="GET" action="/">
               {% for title in titles %}
               <option value="{{title}}" SELECTED>{{title}}</option>
               {% endfor %}
@@ -106,7 +123,7 @@
           <tr style="height:55px;">
           <div>
           <td><label for="input_2">Choose COLOR:</label></td>
-          <td><select name="input_2"  method="GET" action="/">
+          <td><select name="input_2" class="select" method="GET" action="/">
               {% for title in titles %}
               <option value="{{title}}" SELECTED>{{title}}</option>
               {% endfor %}
@@ -117,10 +134,13 @@
           <tr>
           <div>
           <td></td>
-          <td><button type="submit" class="theme_btn" name="button">Save</button></td>
+          <td><button type="submit" class="theme_btn" name="button">Finalize</button></td>
           </div>
           </tr>
           </form>
+
+
+
 
 </table>
 
@@ -134,6 +154,19 @@
 
 </div>
 </div>
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h4>Description:</h4>
+      <p>Select the EAN (GTIN) and choose two attributes containing the name. After this the images will be checked and renamed. </p>
+
+    </div>
+
+  </div>
+
 </div>
 
 </section>

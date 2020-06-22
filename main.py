@@ -150,8 +150,8 @@ def frontbackimages():
         return render_template('index.html')
     elif request.method == 'POST':
         suffix = request.form.get('back_images')
-
-        rename_front(suffix)
+        fsuffix = request.form.get('front_images')
+        rename_front(suffix, fsuffix)
         #totalrenamer(suffix)
         return redirect('/upload.html')
 
@@ -188,31 +188,41 @@ def foldernames():
 
 
 @app.route('/imagename', methods=['GET', 'POST'])
-def rename_front(suffix):
+def rename_front(suffix, fsuffix):
     param = suffix
+    fparam = fsuffix
+    #print(f'{fparam} this is front param')
 
     for filename in os.listdir(image_container):
         or_name = os.path.splitext(filename)[0]
-        front_image_list = []
 
         if param in or_name:
-            #front_image_list.append(filename)
+
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(back_folder, filename)
             shutil.copyfile(src, dst_source)
             #os.remove(image_container, filename)
 
-        else:
-            front_image_list.append(filename)
+        elif fparam in or_name:
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(front_folder, filename)
             shutil.copyfile(src, dst_source)
-            #os.remove(image_container, filename)
+        else:
+            print('no match')
+
+        # else:
+
+        #     src = os.path.join(image_container, filename)
+        #     dst_source = os.path.join(front_folder, filename)
+        #     shutil.copyfile(src, dst_source)
+        #     #os.remove(image_container, filename)
+
+
 
     front_count = len(os.listdir(front_folder))
     back_count = len(os.listdir(back_folder))
     print(f'front images count: {front_count}, back images count: {back_count}')
-    print(len(front_image_list))
+
     #uploadfile(front_count, back_count)
     return render_template('upload.html')
 
@@ -225,6 +235,7 @@ def uploadfile():
         return render_template('upload.html')
     elif request.method == 'POST':
         input_file = request.files["input_file"]
+        #input_file = request.form.get("input_file")
         df = pd.read_excel(input_file, delimiter=',')
         df = df[df.columns.drop(list(df.filter(regex='koop|omschrijv|description|lengte|Unnamed|harmonised|btw')))]
 
@@ -341,4 +352,4 @@ def download_csv_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)

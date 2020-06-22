@@ -30,13 +30,36 @@
       <div class="col-lg-12" style="text-align:center">
 
         <form class="" action="/imagename" method="post">
+          <table>
 
-          <label for="back_images">Please enter the indentifier for back images:</label>
+          <tr>
+          <td><label for="back_images">Indentifier for front images:</label></td>
+          <td><input type="text" name="front_images" value=""></td>
+          </tr>
+          <tr>
+          <td><label for="back_images">Indentifier for back images:</label></td>
+          <td><input type="text" name="back_images" value=""></td>
+          </tr>
+          <tr>
+          <td></td>
+          <td><button type="submit" class="theme_btn" name="button">NEXT</button></td>
+          </tr>
+          </table>
 
-          <input type="text" name="back_images" value="">
-          <button type="submit" class="theme_btn" name="button">Save & continue</button>
         </form>
       </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h4>Description:</h4>
+        <p>Indentify the images by a unique string or number. For example all back images have '_2' and front images '_1'.</p>
+
+      </div>
+
+    </div>
+
+  </div>
 
   <div class="container">
     <div class="row">
