@@ -329,11 +329,11 @@ def download_back_images():
 
 @app.route('/download-csv.html', methods=["GET", "POST"])
 def download_csv_file():
-    zip = 'back_images.zip'
-    path = os.path.join(CLEAN_FOLDER + zip)
+    csv_file = 'output.csv'
+    path = os.path.join(CSV_FOLDER + csv_file)
 
     return send_file(path, as_attachment=True, cache_timeout=0)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
