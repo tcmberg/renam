@@ -321,7 +321,7 @@ def test():
         custom_columns.append('gedaan')
         #print(custom_columns)
         fs.to_csv(CSV_FOLDER + 'output3.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
-        fs.close()
+        
 
 
         fs2 = pd.read_csv(CSV_FOLDER + 'output3.csv', delimiter=',')
