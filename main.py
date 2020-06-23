@@ -42,7 +42,7 @@ image_container =  os.path.join(USER + '/image/image_container/')
 
 MAIN_FOLDER = './'
 CLEAN_FOLDER = '/home/sofzone/'
-MAIN_IMAGE = './var/www/temp/image/'
+
 
 
 
@@ -182,9 +182,7 @@ def foldernames():
     if not os.path.exists(CSV_FOLDER):
         os.makedirs(CSV_FOLDER)
         print('CSV_FOLDER folder created.')
-    if not os.path.exists(MAIN_IMAGE):
-        os.makedirs(MAIN_IMAGE)
-        print('MAIN_IMAGE folder created.')
+
 
 
 @app.route('/imagename', methods=['GET', 'POST'])
