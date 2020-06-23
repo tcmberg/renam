@@ -315,13 +315,13 @@ def test():
 
 
         fs = pd.read_csv(CSV_FOLDER + 'output.csv', delimiter=',')
-        fs3 = fs.drop_duplicates(keep=False, inplace=True)
+        fs.drop_duplicates(keep=False, inplace=True)
 
         custom_columns = [input_gtin]
         custom_columns.append('gedaan')
         #print(custom_columns)
-        fs3.to_csv(CSV_FOLDER + 'output3.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
-        fs3.close()
+        fs.to_csv(CSV_FOLDER + 'output3.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
+        fs.close()
 
 
         fs2 = pd.read_csv(CSV_FOLDER + 'output3.csv', delimiter=',')
