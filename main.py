@@ -238,6 +238,8 @@ def uploadfile():
         df = df[df.columns.drop(list(df.filter(regex='koop|omschrijv|description|lengte|Unnamed|harmonised|btw')))]
 
         df.to_csv(CSV_FOLDER + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
+        original_df = df
+        original_df.to_csv(CSV_FOLDER + 'original.csv', sep=',', encoding='utf-8', index=False, header=True)
         #df.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
         images = [x for x in os.listdir(image_container)[:3]]
         return render_template('upload.html', tables=[df.to_html(classes='data', max_rows=3)], titles=df.columns.values, data=images)
@@ -262,7 +264,7 @@ def test():
         #print(df_update)
         csv_filename = 'test.csv'
         csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
-        df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
+        df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
 
         #df_update.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
 
@@ -270,7 +272,11 @@ def test():
 
         with open(CSV_FOLDER + 'test.csv') as f, open(CSV_FOLDER + 'output.csv', 'w') as b:
             reader = csv.reader(f, delimiter=',')
+
             writer = csv.writer(b)
+            writer.writerow([input_gtin, input_1, input_2, 'gedaan'])
+            next(reader)
+
 
             for row in reader:
                 gtin = row[0]
@@ -310,7 +316,31 @@ def test():
 
         fs = pd.read_csv(CSV_FOLDER + 'output.csv', delimiter=',')
         fs.drop_duplicates(keep=False, inplace=True)
-        fs.to_csv(CSV_FOLDER + 'output.csv', sep=',', encoding='utf-8', index=False, header=True)
+
+        custom_columns = [input_gtin]
+        custom_columns.append('gedaan')
+        #print(custom_columns)
+        fs.to_csv(CSV_FOLDER + 'output3.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
+
+        fs2 = pd.read_csv(CSV_FOLDER + 'output3.csv', delimiter=',')
+        oxo = pd.read_csv(CSV_FOLDER + 'original.csv', delimiter=',')
+
+        exam_scores = oxo.merge(fs2, on=input_gtin)
+
+        best_original = pd.concat([oxo,exam_scores]).drop_duplicates().reset_index(drop=True)
+        print(best_original)
+        best_original.to_excel(CSV_FOLDER + 'output2.xlsx', sheet_name='check_sheet', encoding='utf-8', index=False, header=True)
+
+        #oxo = pd.read_csv(CSV_FOLDER + 'original.csv', delimiter=',')
+        #scores = fs.merge(oxo, on=input_gtin)
+        #dd.to_csv(CSV_FOLDER + 'output.csv', sep=',', encoding='utf-8', index=False, header=True)
+        #print(dd.head())
+        #print(dd)
+
+        #oxo.merge(fs, on=input_gtin, how='left')
+        #print(oxo)
+        #oxo.to_csv(CSV_FOLDER + 'john.csv', sep=',', encoding='utf-8', index=False, header=True)
+
         #print(fs)
 
         shutil.make_archive('front_images', 'zip', SUCCESS_F, MAIN_FOLDER)
@@ -343,7 +373,7 @@ def download_back_images():
 
 @app.route('/download-csv.html', methods=["GET", "POST"])
 def download_csv_file():
-    csv_file = 'output.csv'
+    csv_file = 'output2.xlsx'
     path = os.path.join(CSV_FOLDER + csv_file)
 
     return send_file(path, as_attachment=True, cache_timeout=0)
