@@ -200,13 +200,13 @@ def rename_front(suffix, fsuffix):
 
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(back_folder, filename)
-            shutil.copyfile(src, dst_source)
+            shutil.move(src, dst_source)
             #os.remove(image_container, filename)
 
         elif fparam in or_name:
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(front_folder, filename)
-            shutil.copyfile(src, dst_source)
+            shutil.move(src, dst_source)
         else:
             print('no match')
 
