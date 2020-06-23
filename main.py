@@ -321,7 +321,7 @@ def test():
         custom_columns.append('gedaan')
         #print(custom_columns)
         fs.to_csv(CSV_FOLDER + 'output3.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
-
+        fs.close()
         fs2 = pd.read_csv(CSV_FOLDER + 'output3.csv', delimiter=',')
         oxo = pd.read_csv(CSV_FOLDER + 'original.csv', delimiter=',')
 
@@ -372,9 +372,9 @@ def download_back_images():
     return send_file(path, as_attachment=True, cache_timeout=0)
 
 @app.route('/download-csv.html', methods=["GET", "POST"])
-def download_csv_file():
+def download_excel_file():
     csv_file = 'output2.xlsx'
-    path = os.path.join(CSV_FOLDER + csv_file)
+    path = os.path.join('/USER_1/csv/' + csv_file)
 
     return send_file(path, as_attachment=True, cache_timeout=0)
 
