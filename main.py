@@ -189,19 +189,19 @@ def foldernames():
 def rename_front(suffix, fsuffix):
     param = suffix
     fparam = fsuffix
-    #print(f'{fparam} this is front param')
+    print(f'{fparam} this is front param')
 
     for filename in os.listdir(image_container):
         or_name = os.path.splitext(filename)[0]
 
-        if param in or_name:
+        if param.lower() in or_name:
 
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(back_folder, filename)
             shutil.move(src, dst_source)
             #os.remove(image_container, filename)
 
-        elif fparam in or_name:
+        elif fparam.lower() in or_name:
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(front_folder, filename)
             shutil.move(src, dst_source)
@@ -325,7 +325,10 @@ def test():
         df_f = pd.read_csv(CSV_FOLDER + 'back_output.csv', delimiter=',')
 
         #csv_output = df_f.merge(df_b, on=input_gtin)
-        csv_output = pd.concat([df_b, df_f])
+        #csv_output = pd.concat([df_b, df_f])
+
+        csv_output = pd.merge(df_b, df_f, left_on=input_gtin, right_on=input_gtin)
+        #print(result)
 
         #csv_output = df_f.merge(df_b, on=input_gtin, how='left')
         #print(csv_output)
@@ -341,7 +344,8 @@ def test():
         #print(custom_columns)
 
         csv_output.to_csv(CSV_FOLDER + 'merge_output.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
-
+        print('---=========================<>========================---')
+        print(csv_output)
 
 
         fs2 = pd.read_csv(CSV_FOLDER + 'merge_output.csv', delimiter=',')
