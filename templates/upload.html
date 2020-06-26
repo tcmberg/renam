@@ -60,7 +60,7 @@
 
             <h2>Preview of uploaded file:</h2>
 
-            <div style="overflow-x:auto;">
+            <div>
             {% for table in tables %}
                {{titles[loop.index]}}
                {{ table|safe }}
@@ -69,7 +69,7 @@
 
 
 
-          <div style="overflow-x:auto;">
+          <div>
 
             {% for item in data %}
                 <li>{{item | safe}}</li>

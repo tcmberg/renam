@@ -270,11 +270,15 @@ def test():
 
 
 
-        with open(CSV_FOLDER + 'test.csv') as f, open(CSV_FOLDER + 'output.csv', 'w') as b:
+        with open(CSV_FOLDER + 'test.csv') as f, open(CSV_FOLDER + 'front_output.csv', 'w') as f_output, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
             reader = csv.reader(f, delimiter=',')
 
-            writer = csv.writer(b)
-            writer.writerow([input_gtin, input_1, input_2, 'gedaan'])
+            writer_front = csv.writer(f_output)
+            writer_front.writerow([input_gtin, input_1, input_2, 'front_images'])
+
+            writer_back = csv.writer(b_output)
+            writer_back.writerow([input_gtin, input_1, input_2, 'back_images'])
+
             next(reader)
 
 
@@ -285,52 +289,68 @@ def test():
                 for filename in os.listdir(front_folder):
                     extension = os.path.splitext(filename)[1]
                     if input1 in filename and input2 in filename:
-                        #print(f'hello this is crazy: {filename}, {gtin}, {input1}, {input2} ')
+                        #print(f'hello this is crazy front image ===> MATCH: {filename}, {gtin}, {input1}, {input2} ')
                         src = os.path.join(front_folder, filename)
                         #dstfile = input1 + '_' + input2 + '_front' + extension
                         f_rename = '8712265000' + '115' + gtin + extension
                         dst = os.path.join(SUCCESS_F, f_rename)
                         #os.rename(src, dst)
-                        writer.writerow(row+['gedaan'])
+                        writer_front.writerow(row+['x'])
                         shutil.move(src, dst)
                     else:
-                        writer.writerow(row+['niet gedaan'])
+                        #writer.writerow(row+['niet gedaan'])
                         continue
 
                 for filename in os.listdir(back_folder):
                     extension = os.path.splitext(filename)[1]
                     #print(f'hello this is weird: {filename}, {gtin}, {input1}, {input2} ')
                     if input1 in filename and input2 in filename:
-                        #print(f'hello this is crazy: {filename}, {gtin}, {input1}, {input2} ')
+                        #print(f'hello this is crazy back image ===> MATCH: {filename}, {gtin}, {input1}, {input2} ')
                         src = os.path.join(back_folder, filename)
                         #dstfile = input1 + '_' + input2 + '_back' + extension
                         b_rename = '8712265000' + '719' + gtin + extension
                         dst = os.path.join(SUCCESS_B, b_rename)
                         #os.rename(src, dst)
                         shutil.move(src, dst)
-                        writer.writerow(row+['gedaan'])
+                        writer_back.writerow(row+['x'])
                     else:
-                        writer.writerow(row+['niet gedaan'])
+                        #writer.writerow(row+['niet gedaan'])
+                        #print(f' NO MATCH ===>: {filename}, NOT CONTAIN?: {gtin}, {input1}, {input2}')
                         continue
 
 
-        fs = pd.read_csv(CSV_FOLDER + 'output.csv', delimiter=',')
-        fs.drop_duplicates(keep=False, inplace=True)
+
+
+        df_b = pd.read_csv(CSV_FOLDER + 'front_output.csv', delimiter=',')
+        df_f = pd.read_csv(CSV_FOLDER + 'back_output.csv', delimiter=',')
+
+        #csv_output = df_f.merge(df_b, on=input_gtin)
+        csv_output = pd.concat([df_b, df_f])
+
+        #csv_output = df_f.merge(df_b, on=input_gtin, how='left')
+        #print(csv_output)
+
+        #fs = pd.read_csv(CSV_FOLDER + 'output.csv', delimiter=',')
+        csv_output.drop_duplicates(keep='last', inplace=True)
+        #print(' ----------------------- ')
+        #print(csv_output)
 
         custom_columns = [input_gtin]
-        custom_columns.append('gedaan')
+        custom_columns.append('front_images')
+        custom_columns.append('back_images')
         #print(custom_columns)
-        fs.to_csv(CSV_FOLDER + 'output3.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
-        
+
+        csv_output.to_csv(CSV_FOLDER + 'merge_output.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
 
 
-        fs2 = pd.read_csv(CSV_FOLDER + 'output3.csv', delimiter=',')
+
+        fs2 = pd.read_csv(CSV_FOLDER + 'merge_output.csv', delimiter=',')
         oxo = pd.read_csv(CSV_FOLDER + 'original.csv', delimiter=',')
 
         exam_scores = oxo.merge(fs2, on=input_gtin)
 
         best_original = pd.concat([oxo,exam_scores]).drop_duplicates().reset_index(drop=True)
-        print(best_original)
+        #print(best_original)
         best_original.to_excel(CSV_FOLDER + 'output2.xlsx', sheet_name='check_sheet', encoding='utf-8', index=False, header=True)
 
         #oxo = pd.read_csv(CSV_FOLDER + 'original.csv', delimiter=',')
@@ -374,12 +394,12 @@ def download_back_images():
     return send_file(path, as_attachment=True, cache_timeout=0)
 
 @app.route('/download-csv.html', methods=["GET", "POST"])
-def download_excel_file():
+def download_csv_file():
     csv_file = 'output2.xlsx'
-    path = os.path.join('/USER_1/csv/' + csv_file)
+    path = os.path.join('./USER_1/csv/' + csv_file)
 
     return send_file(path, as_attachment=True, cache_timeout=0)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
