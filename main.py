@@ -42,7 +42,7 @@ image_container =  os.path.join(USER + '/image/image_container/')
 
 MAIN_FOLDER = './'
 CLEAN_FOLDER = '/home/sofzone/'
-
+DOWNLOAD_FOLDER = '/home/sofzone/USER_1/csv/'
 
 
 
@@ -400,7 +400,7 @@ def download_back_images():
 @app.route('/download-csv.html', methods=["GET", "POST"])
 def download_csv_file():
     csv_file = 'output2.xlsx'
-    path = os.path.join('./USER_1/csv/' + csv_file)
+    path = os.path.join(DOWNLOAD_FOLDER + csv_file)
 
     return send_file(path, as_attachment=True, cache_timeout=0)
 
