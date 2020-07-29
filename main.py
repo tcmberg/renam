@@ -9,6 +9,8 @@ import zipfile
 import shutil
 import re
 import glob
+import urllib,json
+
 
 from flask_dropzone import Dropzone
 
@@ -371,15 +373,52 @@ def test():
 
         shutil.make_archive('front_images', 'zip', SUCCESS_F, MAIN_FOLDER)
         shutil.make_archive('back_images', 'zip', SUCCESS_B, MAIN_FOLDER)
-        shutil.rmtree(front_folder)
-        shutil.rmtree(back_folder)
+        # shutil.rmtree(front_folder)
+        # shutil.rmtree(back_folder)
         shutil.rmtree(image_container)
     #    shutil.rmtree(UPLOAD_FOLDER)
-        shutil.rmtree(SUCCESS_F)
-        shutil.rmtree(SUCCESS_B)
+        # shutil.rmtree(SUCCESS_F)
+        # shutil.rmtree(SUCCESS_B)
 
 
         return render_template('/thank-you.html')
+
+
+def gifgen():
+    data = json.loads(urllib.request.urlopen("https://api.giphy.com/v1/gifs/random?api_key=AbHhtRGReRs8nCW39FgiZZnHwSROvrq0&q=happy&limit=1").read())
+    x = data['data']
+    y = x['embed_url']
+    return y
+    #print(json.dumps(data['embed_url'], sort_keys=True, indent=4))
+    #print(json.dumps("\"url\image"))
+    # gif = data['image_original_url']
+    #print(gif)
+
+@app.route('/thank-you.html', methods=["GET", "POST"])
+def thank_you_page():
+    data = gifgen()
+    if request.method == 'GET':
+        return render_template('/thank-you.html', data=data)
+    elif request.method == 'POST':
+        ansn = request.form.get('no')
+        ansy = request.form.get('yes')
+
+
+        if ansn == 'on':
+            shutil.rmtree(SUCCESS_F)
+            shutil.rmtree(SUCCESS_B)
+            foldernames()
+            return render_template('/upload.html')
+
+        if ansy == 'on':
+            shutil.rmtree(front_folder)
+            shutil.rmtree(back_folder)
+            shutil.rmtree(SUCCESS_F)
+            shutil.rmtree(SUCCESS_B)
+            return render_template('/thank-you.html', data=data)
+
+    return render_template('/thank-you.html', data=data)
+
 
 
 @app.route('/download-front.html', methods=["GET", "POST"])
@@ -406,4 +445,4 @@ def download_csv_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)

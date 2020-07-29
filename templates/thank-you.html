@@ -21,6 +21,12 @@
 </section>
 
 <div class="container">
+        <div class="col-lg-12" style="text-align:center">
+      <iframe src="{{data}}" title="happiness" width="250px" height="250px"></iframe>
+</div>
+  </div>
+
+<div class="container">
   <div class="row">
     <div class="col-lg-12" style="text-align:center">
       <h1>DONE!</h1>
@@ -31,8 +37,28 @@
       <p>link back images: <a href="{{url_for( 'download_back_images')}}"> Download Back </a></p>
       <p>CSV list: <a href="{{url_for( 'download_csv_file')}}"> Download Back </a></p>
 
+    </div>
+    </div>
+    </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12" style="text-align:center">
+
+            <form class="form-inline" method="POST" action="/thank-you.html">
+              <input type="radio" name="yes" class="radio" method="GET" action="/">
+              <label for="male">YES, perfect.</label>
+              <input type="radio" name="no" class="radio" method="GET" action="/">
+              <label for="female">NO, try again.</label><br><br>
+              <button type="submit" class="theme_btn" name="button">Submit</button>
+            </form>
+
 </div>
 </div>
 </div>
+
+
+
+
 
 {% endblock %}
