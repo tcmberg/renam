@@ -200,13 +200,13 @@ def rename_front(suffix, fsuffix):
 
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(back_folder, filename)
-            shutil.move(src, dst_source)
+            shutil.copyfile(src, dst_source)
             #os.remove(image_container, filename)
 
         elif fparam.lower() in or_name:
             src = os.path.join(image_container, filename)
             dst_source = os.path.join(front_folder, filename)
-            shutil.move(src, dst_source)
+            shutil.copyfile(src, dst_source)
         else:
             print('no match')
 
@@ -375,13 +375,14 @@ def test():
         shutil.make_archive('back_images', 'zip', SUCCESS_B, MAIN_FOLDER)
         # shutil.rmtree(front_folder)
         # shutil.rmtree(back_folder)
-        shutil.rmtree(image_container)
+        #shutil.rmtree(image_container)
     #    shutil.rmtree(UPLOAD_FOLDER)
         # shutil.rmtree(SUCCESS_F)
         # shutil.rmtree(SUCCESS_B)
 
-
-        return render_template('/thank-you.html')
+        data = gifgen()
+        print(data)
+        return render_template('/thank-you.html', data=data)
 
 
 def gifgen():
@@ -397,6 +398,7 @@ def gifgen():
 @app.route('/thank-you.html', methods=["GET", "POST"])
 def thank_you_page():
     data = gifgen()
+
     if request.method == 'GET':
         return render_template('/thank-you.html', data=data)
     elif request.method == 'POST':
@@ -407,14 +409,17 @@ def thank_you_page():
         if ansn == 'on':
             shutil.rmtree(SUCCESS_F)
             shutil.rmtree(SUCCESS_B)
+            shutil.rmtree(front_folder)
+            shutil.rmtree(back_folder)
             foldernames()
-            return render_template('/upload.html')
+            return render_template('/image_processed.html')
 
         if ansy == 'on':
             shutil.rmtree(front_folder)
             shutil.rmtree(back_folder)
             shutil.rmtree(SUCCESS_F)
             shutil.rmtree(SUCCESS_B)
+            shutil.rmtree(image_container)
             return render_template('/thank-you.html', data=data)
 
     return render_template('/thank-you.html', data=data)
@@ -445,4 +450,4 @@ def download_csv_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
