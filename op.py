@@ -18,17 +18,18 @@ from flask_dropzone import Dropzone
 import errno, stat
 
 app = Flask(__name__)
-
 dropzone = Dropzone(app)
-
 app.secret_key = 'xyz'
 
 #app.debug = True
 #app.config["DEBUG"] = True
 
 #FOlDERS
+
 USER_1 = './USER_1'
+
 USER = USER_1
+
 CSV_FOLDER = os.path.join(USER + '/csv/')
 UPLOAD_FOLDER = os.path.join(USER +'/images/')
 SUCCESS_F =  os.path.join(USER + '/success/f/')
@@ -36,11 +37,15 @@ SUCCESS_B =  os.path.join(USER + '/success/b/')
 ALLOWED_EXTENSIONS = set(['zip'])
 front_folder =  os.path.join(USER + '/front_images/')
 back_folder =  os.path.join(USER + '/back_images/')
+image_container =  os.path.join(USER + '/image/image_container/')
 
-BACKUP_ZIP =  './backup/'
+
 MAIN_FOLDER = './'
 CLEAN_FOLDER = '/home/sofzone/'
 DOWNLOAD_FOLDER = '/home/sofzone/USER_1/csv/'
+
+
+
 
 
 
@@ -51,12 +56,9 @@ def allowed_file(filename):
 
 
 @app.route('/')
-def index():
-    root_htmlzaio()
-    return render_template('image_dropzone.html')
-
-
 def root_htmlzaio():
+
+
     try:
         for filename in os.listdir(CLEAN_FOLDER):
             if 'back_images.zip' in filename or 'front_images.zip' in filename:
@@ -81,10 +83,13 @@ def testing_html():
     try:
         for filename in os.listdir(MAIN_FOLDER):
             path_zip = os.path.join(MAIN_FOLDER + filename)
-            dest_zip = os.path.join(BACKUP_ZIP + filename)
             if '.zip' in filename:
-                shutil.copyfile(path_zip, dest_zip)
+
                 zip_ref = zipfile.ZipFile(os.path.join(MAIN_FOLDER, filename), 'r')
+                #zip_ref.extractall(UPLOAD_FOLDER)
+                #zip_ref.close()
+                #os.remove(path_zip)
+                #image_list = []
 
                 with zip_ref as zip:
                     for zip_info in zip.infolist():
@@ -95,24 +100,36 @@ def testing_html():
                     zip_ref.close()
                     os.remove(path_zip)
                     image_list = []
+
                 #ZIP FILE > ORGANIZE
 
                 for filename in os.listdir(UPLOAD_FOLDER):
                         filename_or = os.path.splitext(filename)[0]
                         extension = os.path.splitext(filename)[1]
-                        #clean_name = re.sub("[^a-zA-Z0-9_]", "", filename_or).lower() + extension.lower()
-                        or_lower = filename_or.lower() + extension.lower()
+                        clean_name = re.sub("[^a-zA-Z0-9_]", "", filename_or).lower() + extension.lower()
 
                         src = os.path.join(UPLOAD_FOLDER, filename)
-                        dst = os.path.join(UPLOAD_FOLDER, or_lower)
+                        dst = os.path.join(UPLOAD_FOLDER, clean_name)
 
                         shutil.move(src,dst)
+                        img_container = os.path.join(image_container, clean_name)
+                        image_list.append(clean_name)
 
+                        #all images that are moved to container.
+
+
+                        if '.jpg' in clean_name or '.png' in clean_name:
+                            shutil.move(dst, img_container)
+                            #count_move_images = count_move_images + 1
+
+
+                        #shutil.rmtree(UPLOAD_FOLDER)
+
+                #session['image_list'] = image_list
                 #return render_template('image_processed.html', data=image_list)
-                data = len(os.listdir(UPLOAD_FOLDER))
-                print(data)
-                #shutil.rmtree(UPLOAD_FOLDER)
-                return render_template('image_processed.html', info=data)
+
+                shutil.rmtree(UPLOAD_FOLDER)
+                return render_template('image_processed.html')
 
 
     except:
@@ -134,21 +151,21 @@ def frontbackimages():
     elif request.method == 'POST':
         suffix = request.form.get('back_images')
         fsuffix = request.form.get('front_images')
-        list = rename_front(suffix, fsuffix)
-        data_front = list[0]
-        front_count = list[1]
-        back_count = list[2]
-        data_back = list[3]
-
-        return render_template('image_naming.html', front_count=front_count, back_count=back_count, data_front=data_front, data_back=data_back)
+        rename_front(suffix, fsuffix)
+        #totalrenamer(suffix)
+        return redirect('/upload.html')
 
     #return redirect('/process.html')
     return render_template('image_dropzone.html')
 
 
+
 def foldernames():
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
+        print('front folder created.')
+    if not os.path.exists(image_container):
+        os.makedirs(image_container)
         print('front folder created.')
     if not os.path.exists(front_folder):
         os.makedirs(front_folder)
@@ -165,9 +182,6 @@ def foldernames():
     if not os.path.exists(CSV_FOLDER):
         os.makedirs(CSV_FOLDER)
         print('CSV_FOLDER folder created.')
-    if not os.path.exists(BACKUP_ZIP):
-        os.makedirs(BACKUP_ZIP)
-        print('BACKUP_ZIP folder created.')
 
 
 
@@ -177,54 +191,39 @@ def rename_front(suffix, fsuffix):
     fparam = fsuffix
     print(f'{fparam} this is front param')
 
-    front_image_list = []
-    back_image_list = []
-
-    for filename in os.listdir(UPLOAD_FOLDER):
+    for filename in os.listdir(image_container):
         or_name = os.path.splitext(filename)[0]
 
         if param.lower() in or_name:
-            src = os.path.join(UPLOAD_FOLDER, filename)
+
+            src = os.path.join(image_container, filename)
             dst_source = os.path.join(back_folder, filename)
-            back_image_list.append(filename)
             shutil.copyfile(src, dst_source)
+            #os.remove(image_container, filename)
 
         elif fparam.lower() in or_name:
-            src = os.path.join(UPLOAD_FOLDER, filename)
+            src = os.path.join(image_container, filename)
             dst_source = os.path.join(front_folder, filename)
-            front_image_list.append(filename)
             shutil.copyfile(src, dst_source)
-
-
         else:
             print('no match')
 
+        # else:
 
-    data_front = front_image_list
-    data_back = back_image_list
+        #     src = os.path.join(image_container, filename)
+        #     dst_source = os.path.join(front_folder, filename)
+        #     shutil.copyfile(src, dst_source)
+        #     #os.remove(image_container, filename)
+
+
+
     front_count = len(os.listdir(front_folder))
     back_count = len(os.listdir(back_folder))
     print(f'front images count: {front_count}, back images count: {back_count}')
 
-    list = [data_front, front_count, back_count, data_back]
     #uploadfile(front_count, back_count)
+    return render_template('upload.html')
 
-    return list
-
-
-@app.route('/back', methods=["GET", "POST"])
-def redo():
-    shutil.rmtree(front_folder)
-    shutil.rmtree(back_folder)
-
-    if not os.path.exists(front_folder):
-        os.makedirs(front_folder)
-        print('front folder created.')
-    if not os.path.exists(back_folder):
-        os.makedirs(back_folder)
-        print('back folder created.')
-
-    return render_template('image_processed.html')
 
 
 @app.route('/upload.html', methods=["GET", "POST"])
@@ -235,14 +234,14 @@ def uploadfile():
     elif request.method == 'POST':
         input_file = request.files["input_file"]
         #input_file = request.form.get("input_file")
-        df = pd.read_excel(input_file)
-        df = df[df.columns.drop(list(df.filter(regex='koop|description|lengte|Unnamed|harmonised|btw')))]
+        df = pd.read_excel(input_file, delimiter=',')
+        df = df[df.columns.drop(list(df.filter(regex='koop|omschrijv|description|lengte|Unnamed|harmonised|btw')))]
 
         df.to_csv(CSV_FOLDER + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
         original_df = df
         original_df.to_csv(CSV_FOLDER + 'original.csv', sep=',', encoding='utf-8', index=False, header=True)
         #df.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
-        images = [x for x in os.listdir(front_folder)[:3]]
+        images = [x for x in os.listdir(image_container)[:3]]
         return render_template('upload.html', tables=[df.to_html(classes='data', max_rows=3)], titles=df.columns.values, data=images)
 
 
@@ -258,7 +257,7 @@ def test():
         input_2 = request.form.get('input_2')
         col_list = [input_gtin, input_1, input_2]
 
-        database2 = pd.read_csv(CSV_FOLDER + 'test.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>3}'.format(x).lower(), input_2: lambda x: '{0:0>2}'.format(x).lower()})
+        database2 = pd.read_csv(CSV_FOLDER + 'test.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>4}'.format(x).lower(), input_2: lambda x: '{0:0>3}'.format(x).lower()})
         database2.sort_values(input_1, ascending=True)
         database2.drop_duplicates(subset=[input_1])
         df_update = database2.replace(to_replace="[^a-zA-Z0-9_]", value="",regex=True)
@@ -266,6 +265,9 @@ def test():
         csv_filename = 'test.csv'
         csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
         df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
+
+        #df_update.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', columns=col_list, index=False, header=False)
+
 
 
         with open(CSV_FOLDER + 'test.csv') as f, open(CSV_FOLDER + 'front_output.csv', 'w') as f_output, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
@@ -282,9 +284,8 @@ def test():
 
             for row in reader:
                 gtin = row[0]
-                input1 = row[1].lower()
-                input2 = row[2].lower()
-
+                input1 = row[1]
+                input2 = row[2]
                 for filename in os.listdir(front_folder):
                     extension = os.path.splitext(filename)[1]
                     if input1 in filename and input2 in filename:
@@ -318,15 +319,29 @@ def test():
                         continue
 
 
+
+
         df_b = pd.read_csv(CSV_FOLDER + 'front_output.csv', delimiter=',')
         df_f = pd.read_csv(CSV_FOLDER + 'back_output.csv', delimiter=',')
 
-        csv_output = pd.merge(df_b, df_f, left_on=input_gtin, right_on=input_gtin)
+        #csv_output = df_f.merge(df_b, on=input_gtin)
+        #csv_output = pd.concat([df_b, df_f])
 
+        csv_output = pd.merge(df_b, df_f, left_on=input_gtin, right_on=input_gtin)
+        #print(result)
+
+        #csv_output = df_f.merge(df_b, on=input_gtin, how='left')
+        #print(csv_output)
+
+        #fs = pd.read_csv(CSV_FOLDER + 'output.csv', delimiter=',')
         csv_output.drop_duplicates(keep='last', inplace=True)
+        #print(' ----------------------- ')
+        #print(csv_output)
+
         custom_columns = [input_gtin]
         custom_columns.append('front_images')
         custom_columns.append('back_images')
+        #print(custom_columns)
 
         csv_output.to_csv(CSV_FOLDER + 'merge_output.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
         print('---=========================<>========================---')
@@ -342,9 +357,26 @@ def test():
         #print(best_original)
         best_original.to_excel(CSV_FOLDER + 'output2.xlsx', sheet_name='check_sheet', encoding='utf-8', index=False, header=True)
 
+        #oxo = pd.read_csv(CSV_FOLDER + 'original.csv', delimiter=',')
+        #scores = fs.merge(oxo, on=input_gtin)
+        #dd.to_csv(CSV_FOLDER + 'output.csv', sep=',', encoding='utf-8', index=False, header=True)
+        #print(dd.head())
+        #print(dd)
+
+        #oxo.merge(fs, on=input_gtin, how='left')
+        #print(oxo)
+        #oxo.to_csv(CSV_FOLDER + 'john.csv', sep=',', encoding='utf-8', index=False, header=True)
+
+        #print(fs)
+
         shutil.make_archive('front_images', 'zip', SUCCESS_F, MAIN_FOLDER)
         shutil.make_archive('back_images', 'zip', SUCCESS_B, MAIN_FOLDER)
-
+        # shutil.rmtree(front_folder)
+        # shutil.rmtree(back_folder)
+        #shutil.rmtree(image_container)
+    #    shutil.rmtree(UPLOAD_FOLDER)
+        # shutil.rmtree(SUCCESS_F)
+        # shutil.rmtree(SUCCESS_B)
 
         data = gifgen()
         print(data)
@@ -371,30 +403,25 @@ def thank_you_page():
         ansn = request.form.get('no')
         ansy = request.form.get('yes')
 
+
         if ansn == 'on':
             shutil.rmtree(SUCCESS_F)
             shutil.rmtree(SUCCESS_B)
             shutil.rmtree(front_folder)
             shutil.rmtree(back_folder)
             foldernames()
-
-            for filename in os.listdir(BACKUP_ZIP):
-                path_zip = os.path.join(BACKUP_ZIP + filename)
-                dest_zip = os.path.join(MAIN_FOLDER + filename)
-                if '.zip' in filename:
-                    shutil.move(path_zip, dest_zip)
-                    return redirect(url_for('index'))
-                        #return render_template('/image_dropzone.html')
+            return render_template('/image_processed.html')
 
         if ansy == 'on':
             shutil.rmtree(front_folder)
             shutil.rmtree(back_folder)
             shutil.rmtree(SUCCESS_F)
             shutil.rmtree(SUCCESS_B)
-            shutil.rmtree(UPLOAD_FOLDER)
-        return render_template('/thank-you.html', data=data)
+            shutil.rmtree(image_container)
+            return render_template('/thank-you.html', data=data)
 
     return render_template('/thank-you.html', data=data)
+
 
 
 @app.route('/download-front.html', methods=["GET", "POST"])
@@ -421,4 +448,4 @@ def download_csv_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
