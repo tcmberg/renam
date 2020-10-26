@@ -1,0 +1,75 @@
+
+
+{% extends "./base.html" %}
+
+{% block content %}
+
+  <!-- Header Area -->
+
+    <section class="banner_area">
+    	<div class="container bdr">
+
+    		<div class="row">
+
+    			<div class="col-lg-12">
+            <ul class="progressbar">
+                <li class="active">Upload image as zip</li>
+                <li class="active">Indentify Back images</li>
+                <li>Upload your Excel file</li>
+                <li>Indentify Excel file</li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+<section>
+  <div class="container">
+    <div class="row">
+      <span style="font-size:25px;">{{front_count}} front images</span><br>
+      <span style="font-size:25px;">{{back_count}} back images</span><br><br><br>
+
+      <div class="col-lg-6" style="float:left;">
+
+      <a href="/back"><div class="theme_btn" style="float:right;margin-top:15px">TERUG</div></a>
+      </div>
+      <div class="col-lg-6">
+      <a href="/upload.html"><div class="theme_btn" style="float:right;margin-top:15px">Continue</div></a><br><br>
+      </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12" style="text-align:center">
+        <h2>FRONT IMAGES:</h2>
+      <ul>
+        {% for item in data_front %}
+      <li>{{item}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12" style="text-align:center">
+      <h2>BACK IMAGES:</h2>
+    <ul>
+      {% for item in data_back %}
+    <li>{{item}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+</div>
+
+    </div>
+
+</div>
+
+
+
+</section>
+
+{% endblock %}
