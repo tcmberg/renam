@@ -80,10 +80,11 @@ def testing_html():
 
     try:
         for filename in os.listdir(MAIN_FOLDER):
-            path_zip = os.path.join(MAIN_FOLDER + filename)
-            dest_zip = os.path.join(BACKUP_ZIP + filename)
+            #path_zip = os.path.join(MAIN_FOLDER + filename)
+            #dest_zip = os.path.join(BACKUP_ZIP + filename)
             if '.zip' in filename:
-                shutil.copyfile(path_zip, dest_zip)
+                print('there')
+                #shutil.copyfile(path_zip, dest_zip)
                 zip_ref = zipfile.ZipFile(os.path.join(MAIN_FOLDER, filename), 'r')
 
                 with zip_ref as zip:
@@ -93,8 +94,8 @@ def testing_html():
                         zip_info.filename = os.path.basename(zip_info.filename)
                         zip.extract(zip_info, UPLOAD_FOLDER)
                     zip_ref.close()
-                    os.remove(path_zip)
-                    image_list = []
+                   # os.remove(path_zip)
+                   # image_list = []
                 #ZIP FILE > ORGANIZE
 
                 for filename in os.listdir(UPLOAD_FOLDER):
@@ -261,12 +262,13 @@ def test():
         database2 = pd.read_csv(CSV_FOLDER + 'test.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>3}'.format(x).lower(), input_2: lambda x: '{0:0>2}'.format(x).lower()})
         database2.sort_values(input_1, ascending=True)
         database2.drop_duplicates(subset=[input_1])
-        df_update = database2.replace(to_replace="[^a-zA-Z0-9_]", value="",regex=True)
+        #df_update = database2.replace(to_replace="[^a-zA-Z0-9_]", value="",regex=True)
+
         #print(df_update)
         csv_filename = 'test.csv'
         csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
-        df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
-
+       # df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
+        database2.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
 
         with open(CSV_FOLDER + 'test.csv') as f, open(CSV_FOLDER + 'front_output.csv', 'w') as f_output, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
             reader = csv.reader(f, delimiter=',')
