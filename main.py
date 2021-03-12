@@ -11,7 +11,6 @@ import re
 import glob
 import urllib,json
 import os
-from PIL import Image
 import random
 
 from flask_dropzone import Dropzone
@@ -32,8 +31,6 @@ USER_1 = './USER_1'
 USER = USER_1
 CSV_FOLDER = os.path.join(USER + '/csv/')
 UPLOAD_FOLDER = os.path.join(USER +'/images/')
-SUCCESS_F =  os.path.join(USER + '/success/f/')
-SUCCESS_B =  os.path.join(USER + '/success/b/')
 ALLOWED_EXTENSIONS = set(['zip'])
 TEST = os.path.join(USER +'/TEST/')
 
