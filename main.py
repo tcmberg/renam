@@ -10,10 +10,11 @@ import shutil
 import re
 import glob
 import urllib,json
-
+import os
+from PIL import Image
+import random
 
 from flask_dropzone import Dropzone
-
 
 import errno, stat
 
@@ -34,57 +35,29 @@ UPLOAD_FOLDER = os.path.join(USER +'/images/')
 SUCCESS_F =  os.path.join(USER + '/success/f/')
 SUCCESS_B =  os.path.join(USER + '/success/b/')
 ALLOWED_EXTENSIONS = set(['zip'])
-front_folder =  os.path.join(USER + '/front_images/')
-back_folder =  os.path.join(USER + '/back_images/')
+TEST = os.path.join(USER +'/TEST/')
 
-BACKUP_ZIP =  './backup/'
 MAIN_FOLDER = './'
 CLEAN_FOLDER = '/home/sofzone/'
 DOWNLOAD_FOLDER = '/home/sofzone/USER_1/csv/'
-
 
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-
 @app.route('/')
 def index():
-    root_htmlzaio()
-    return render_template('image_dropzone.html')
-
-
-def root_htmlzaio():
-    try:
-        for filename in os.listdir(CLEAN_FOLDER):
-            if 'back_images.zip' in filename or 'front_images.zip' in filename:
-                os.remove(filename)
-
-    except:
-        print('All cleaned up!')
-
-    try:
-        if os.path.exists(USER_1):
-            shutil.rmtree(USER_1)
-    except:
-        print('nothing to see')
-
-    return render_template('image_dropzone.html')
-
-
-@app.route('/go', methods=['GET', 'POST'])
-def testing_html():
     foldernames()
+    return render_template('image_dropzone.html')
 
+
+@app.route('/step1', methods=['GET', 'POST'])
+def testing_html():
     try:
         for filename in os.listdir(MAIN_FOLDER):
-            #path_zip = os.path.join(MAIN_FOLDER + filename)
-            #dest_zip = os.path.join(BACKUP_ZIP + filename)
+            path_zip = os.path.join(MAIN_FOLDER + filename)
             if '.zip' in filename:
-                print('there')
-                #shutil.copyfile(path_zip, dest_zip)
                 zip_ref = zipfile.ZipFile(os.path.join(MAIN_FOLDER, filename), 'r')
 
                 with zip_ref as zip:
@@ -92,335 +65,176 @@ def testing_html():
                         if zip_info.filename[-1] == '/':
                             continue
                         zip_info.filename = os.path.basename(zip_info.filename)
-                        zip.extract(zip_info, UPLOAD_FOLDER)
+                        zip.extract(zip_info, TEST)
                     zip_ref.close()
-                   # os.remove(path_zip)
-                   # image_list = []
-                #ZIP FILE > ORGANIZE
+                    os.remove(path_zip)
 
-                for filename in os.listdir(UPLOAD_FOLDER):
-                        filename_or = os.path.splitext(filename)[0]
-                        extension = os.path.splitext(filename)[1]
-                        #clean_name = re.sub("[^a-zA-Z0-9_]", "", filename_or).lower() + extension.lower()
-                        or_lower = filename_or.lower() + extension.lower()
+                for filename in os.listdir(TEST):
+                    filename_or = os.path.splitext(filename)[0]
+                    extension = os.path.splitext(filename)[1]
 
-                        src = os.path.join(UPLOAD_FOLDER, filename)
-                        dst = os.path.join(UPLOAD_FOLDER, or_lower)
+                    or_lower = filename_or.lower() + extension.lower()
+                    src = os.path.join(TEST, filename)
+                    dst = os.path.join(TEST, or_lower)
 
-                        shutil.move(src,dst)
+                    shutil.move(src,dst)
 
-                #return render_template('image_processed.html', data=image_list)
-                data = len(os.listdir(UPLOAD_FOLDER))
-                print(data)
-                #shutil.rmtree(UPLOAD_FOLDER)
-                return render_template('image_processed.html', info=data)
+                return render_template('upload-2.html')
 
-
-    except:
+    except Exception as e:
+        print(e)
+        info = e
         print('An error occurred.')
-        return render_template('image_dropzone.html')
+        return render_template('image_dropzone.html', info=info)
 
     return render_template('image_dropzone.html')
 
-@app.route('/continue')
-def continue_html():
-
-    #return render_template('image_processed.html', data=session['image_list'])
-    return render_template('image_processed.html')
-
-@app.route('/imagename', methods=['GET', 'POST'])
-def frontbackimages():
+@app.route('/step2', methods=["GET", "POST"])
+def set_front_or_back_images():
     if request.method == 'GET':
-        return render_template('index.html')
+        return render_template('step2.html')
     elif request.method == 'POST':
-        suffix = request.form.get('back_images')
-        fsuffix = request.form.get('front_images')
-        list = rename_front(suffix, fsuffix)
-        data_front = list[0]
-        front_count = list[1]
-        back_count = list[2]
-        data_back = list[3]
+            set_front_images = request.form.get('ffolder')
+            print(set_front_images)
 
-        return render_template('image_naming.html', front_count=front_count, back_count=back_count, data_front=data_front, data_back=data_back)
-
-    #return redirect('/process.html')
-    return render_template('image_dropzone.html')
+    return render_template('step2.html')
 
 
-def foldernames():
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-        print('front folder created.')
-    if not os.path.exists(front_folder):
-        os.makedirs(front_folder)
-        print('front folder created.')
-    if not os.path.exists(back_folder):
-        os.makedirs(back_folder)
-        print('back folder created.')
-    if not os.path.exists(SUCCESS_F):
-        os.makedirs(SUCCESS_F)
-        print('SUCCESS_F folder created.')
-    if not os.path.exists(SUCCESS_B):
-        os.makedirs(SUCCESS_B)
-        print('SUCCESS_B folder created.')
-    if not os.path.exists(CSV_FOLDER):
-        os.makedirs(CSV_FOLDER)
-        print('CSV_FOLDER folder created.')
-    if not os.path.exists(BACKUP_ZIP):
-        os.makedirs(BACKUP_ZIP)
-        print('BACKUP_ZIP folder created.')
-
-
-
-@app.route('/imagename', methods=['GET', 'POST'])
-def rename_front(suffix, fsuffix):
-    param = suffix
-    fparam = fsuffix
-    print(f'{fparam} this is front param')
-
-    front_image_list = []
-    back_image_list = []
-
-    for filename in os.listdir(UPLOAD_FOLDER):
-        or_name = os.path.splitext(filename)[0]
-
-        if param.lower() in or_name:
-            src = os.path.join(UPLOAD_FOLDER, filename)
-            dst_source = os.path.join(back_folder, filename)
-            back_image_list.append(filename)
-            shutil.copyfile(src, dst_source)
-
-        elif fparam.lower() in or_name:
-            src = os.path.join(UPLOAD_FOLDER, filename)
-            dst_source = os.path.join(front_folder, filename)
-            front_image_list.append(filename)
-            shutil.copyfile(src, dst_source)
-
-
-        else:
-            print('no match')
-
-
-    data_front = front_image_list
-    data_back = back_image_list
-    front_count = len(os.listdir(front_folder))
-    back_count = len(os.listdir(back_folder))
-    print(f'front images count: {front_count}, back images count: {back_count}')
-
-    list = [data_front, front_count, back_count, data_back]
-    #uploadfile(front_count, back_count)
-
-    return list
-
-
-@app.route('/back', methods=["GET", "POST"])
-def redo():
-    shutil.rmtree(front_folder)
-    shutil.rmtree(back_folder)
-
-    if not os.path.exists(front_folder):
-        os.makedirs(front_folder)
-        print('front folder created.')
-    if not os.path.exists(back_folder):
-        os.makedirs(back_folder)
-        print('back folder created.')
-
-    return render_template('image_processed.html')
-
-
-@app.route('/upload.html', methods=["GET", "POST"])
+@app.route('/step3', methods=["GET", "POST"])
 def uploadfile():
 
     if request.method == 'GET':
-        return render_template('upload.html')
+        return render_template('upload-2.html')
     elif request.method == 'POST':
         input_file = request.files["input_file"]
-        #input_file = request.form.get("input_file")
         df = pd.read_excel(input_file)
         df = df[df.columns.drop(list(df.filter(regex='koop|description|lengte|Unnamed|harmonised|btw')))]
-
-        df.to_csv(CSV_FOLDER + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
-        original_df = df
-        original_df.to_csv(CSV_FOLDER + 'original.csv', sep=',', encoding='utf-8', index=False, header=True)
-        #df.to_csv('./var/www/temp/' + 'test.csv', sep=',', encoding='utf-8', index=False, header=True)
-        images = [x for x in os.listdir(front_folder)[:3]]
-        return render_template('upload.html', tables=[df.to_html(classes='data', max_rows=3)], titles=df.columns.values, data=images)
+        df.to_csv(CSV_FOLDER + 'compare.csv', sep=',', encoding='utf-8', index=False, header=True)
+        df.to_csv(CSV_FOLDER + 'original.csv', sep=',', encoding='utf-8', index=False, header=True)
+        images = [x for x in os.listdir(TEST)[:5]]
+        return render_template('upload-2.html', tables=[df.to_html(classes='data', max_rows=5)], titles=df.columns.values, data=images)
 
 
-@app.route('/upload2.html', methods=["GET", "POST"])
-def test():
+def setup_front_images(set_front_images):
+    if set_front_images == 'set_front_images':
+        image_code = '115'
+    elif set_front_images == 'set_back_images':
+        image_code = '719'
+    else:
+        image_code = ''
+    return image_code
 
-    if request.method == 'GET':
-        return render_template('/upload.html')
-    elif request.method == 'POST':
 
-        input_gtin = request.form.get('gtin_in')
-        input_1 = request.form.get('input_1')
-        input_2 = request.form.get('input_2')
-        col_list = [input_gtin, input_1, input_2]
+def cleanup_list():
+    try:
+        for filename in os.listdir(TEST):
+            if not filename.startswith('8712265000'):
+                print(f'remove {filename}')
+                filename = os.path.join(TEST, filename)
+                os.remove(filename)
 
-        database2 = pd.read_csv(CSV_FOLDER + 'test.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>3}'.format(x).lower(), input_2: lambda x: '{0:0>2}'.format(x).lower()})
-        database2.sort_values(input_1, ascending=True)
-        database2.drop_duplicates(subset=[input_1])
-        #df_update = database2.replace(to_replace="[^a-zA-Z0-9_]", value="",regex=True)
+    except:
+        print('.')
+    return 'cleanup'
 
-        #print(df_update)
-        csv_filename = 'test.csv'
-        csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
-       # df_update.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
-        database2.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
+def zip_file_finder():
+    try:
+        for filename in os.listdir(MAIN_FOLDER):
+            if filename.startswith('images_'):
+                return filename
 
-        with open(CSV_FOLDER + 'test.csv') as f, open(CSV_FOLDER + 'front_output.csv', 'w') as f_output, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
+    except:
+        print('.')
+    return 'zip_file_downloader'
+
+
+
+@app.route('/step4', methods=['GET', 'POST'])
+def nextgen():
+        if request.method == 'GET':
+            return render_template('/upload.html')
+        elif request.method == 'POST':
+
+            input_gtin = request.form.get('gtin_in')
+            input_1 = request.form.get('input_1')
+            input_2 = request.form.get('input_2')
+
+            set_front_images = request.form.get('ffolder')
+            image_code = setup_front_images(set_front_images)
+            #print(image_code)
+
+            col_list = [input_gtin, input_1, input_2]
+
+            db2 = pd.read_csv(CSV_FOLDER + 'compare.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>3}'.format(x).lower(), input_2: lambda x: '{0:0>2}'.format(x).lower()})
+            db2[input_gtin] = db2[input_gtin].round().astype('Int64')
+            db2.sort_values(input_1, ascending=True)
+            db1 = db2.drop_duplicates(subset=[input_1])
+
+            csv_filename = 'compare.csv'
+            csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
+            db1.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
+
+            front_bitches(input_gtin, input_1, input_2, image_code)
+
+            cleanup_list()
+            shutil.make_archive('images_' + str(random.randint(0, 999)), 'zip', TEST, MAIN_FOLDER)
+            shutil.rmtree(TEST)
+
+            return render_template('thank-you.html')
+
+
+@app.route('/download_images.html', methods=["GET", "POST"])
+def download_images():
+
+    filename_zipper = zip_file_finder()
+
+    path = os.path.join(CLEAN_FOLDER + filename_zipper)
+
+    return send_file(path, as_attachment=True, cache_timeout=0)
+
+
+
+
+def front_bitches(input_gtin, input_1, input_2, image_code):
+    try:
+        with open(CSV_FOLDER + 'compare.csv') as f, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
             reader = csv.reader(f, delimiter=',')
-
-            writer_front = csv.writer(f_output)
-            writer_front.writerow([input_gtin, input_1, input_2, 'front_images'])
-
             writer_back = csv.writer(b_output)
-            writer_back.writerow([input_gtin, input_1, input_2, 'back_images'])
-
+            writer_back.writerow(['filename', input_1, input_2, 'new_string', 'full_match'])
             next(reader)
 
+            image_code = image_code
+            #print(image_code)
 
             for row in reader:
                 gtin = row[0]
                 input1 = row[1].lower()
                 input2 = row[2].lower()
 
-                for filename in os.listdir(front_folder):
+                for filename in os.listdir(TEST):
                     extension = os.path.splitext(filename)[1]
                     if input1 in filename and input2 in filename:
-                        #print(f'hello this is crazy front image ===> MATCH: {filename}, {gtin}, {input1}, {input2} ')
-                        src = os.path.join(front_folder, filename)
-                        #dstfile = input1 + '_' + input2 + '_front' + extension
-                        f_rename = '8712265000' + '115' + gtin + extension
-                        dst = os.path.join(SUCCESS_F, f_rename)
-                        #os.rename(src, dst)
-                        writer_front.writerow(row+['x'])
-                        shutil.move(src, dst)
-                    else:
-                        #writer.writerow(row+['niet gedaan'])
+                    #    print(f'back image: {filename} ==> MATCH WITH {input1} and {input2} ')
+                        rename_string = '8712265000' + image_code + gtin + extension
+                        old_file_loc = os.path.join(TEST, filename)
+                        new_file_loc = os.path.join(TEST, rename_string)
+                        writer_back.writerow(row)
+                        os.replace(old_file_loc, new_file_loc)
                         continue
+    except:
+        print('nothing')
 
-                for filename in os.listdir(back_folder):
-                    extension = os.path.splitext(filename)[1]
-                    #print(f'hello this is weird: {filename}, {gtin}, {input1}, {input2} ')
-                    if input1 in filename and input2 in filename:
-                        #print(f'hello this is crazy back image ===> MATCH: {filename}, {gtin}, {input1}, {input2} ')
-                        src = os.path.join(back_folder, filename)
-                        #dstfile = input1 + '_' + input2 + '_back' + extension
-                        b_rename = '8712265000' + '719' + gtin + extension
-                        dst = os.path.join(SUCCESS_B, b_rename)
-                        #os.rename(src, dst)
-                        shutil.move(src, dst)
-                        writer_back.writerow(row+['x'])
-                    else:
-                        #writer.writerow(row+['niet gedaan'])
-                        #print(f' NO MATCH ===>: {filename}, NOT CONTAIN?: {gtin}, {input1}, {input2}')
-                        continue
+    return 'done processing back images'
 
 
-        df_b = pd.read_csv(CSV_FOLDER + 'front_output.csv', delimiter=',')
-        df_f = pd.read_csv(CSV_FOLDER + 'back_output.csv', delimiter=',')
-
-        csv_output = pd.merge(df_b, df_f, left_on=input_gtin, right_on=input_gtin)
-
-        csv_output.drop_duplicates(keep='last', inplace=True)
-        custom_columns = [input_gtin]
-        custom_columns.append('front_images')
-        custom_columns.append('back_images')
-
-        csv_output.to_csv(CSV_FOLDER + 'merge_output.csv', sep=',', encoding='utf-8', index=False, header=True, columns=custom_columns)
-        print('---=========================<>========================---')
-        print(csv_output)
-
-
-        fs2 = pd.read_csv(CSV_FOLDER + 'merge_output.csv', delimiter=',')
-        oxo = pd.read_csv(CSV_FOLDER + 'original.csv', delimiter=',')
-
-        exam_scores = oxo.merge(fs2, on=input_gtin)
-
-        best_original = pd.concat([oxo,exam_scores]).drop_duplicates().reset_index(drop=True)
-        #print(best_original)
-        best_original.to_excel(CSV_FOLDER + 'output2.xlsx', sheet_name='check_sheet', encoding='utf-8', index=False, header=True)
-
-        shutil.make_archive('front_images', 'zip', SUCCESS_F, MAIN_FOLDER)
-        shutil.make_archive('back_images', 'zip', SUCCESS_B, MAIN_FOLDER)
-
-
-        data = gifgen()
-        print(data)
-        return render_template('/thank-you.html', data=data)
-
-
-def gifgen():
-    data = json.loads(urllib.request.urlopen("https://api.giphy.com/v1/gifs/random?api_key=AbHhtRGReRs8nCW39FgiZZnHwSROvrq0&q=happy&limit=1").read())
-    x = data['data']
-    y = x['embed_url']
-    return y
-    #print(json.dumps(data['embed_url'], sort_keys=True, indent=4))
-    #print(json.dumps("\"url\image"))
-    # gif = data['image_original_url']
-    #print(gif)
-
-@app.route('/thank-you.html', methods=["GET", "POST"])
-def thank_you_page():
-    data = gifgen()
-
-    if request.method == 'GET':
-        return render_template('/thank-you.html', data=data)
-    elif request.method == 'POST':
-        ansn = request.form.get('no')
-        ansy = request.form.get('yes')
-
-        if ansn == 'on':
-            shutil.rmtree(SUCCESS_F)
-            shutil.rmtree(SUCCESS_B)
-            shutil.rmtree(front_folder)
-            shutil.rmtree(back_folder)
-            foldernames()
-
-            for filename in os.listdir(BACKUP_ZIP):
-                path_zip = os.path.join(BACKUP_ZIP + filename)
-                dest_zip = os.path.join(MAIN_FOLDER + filename)
-                if '.zip' in filename:
-                    shutil.move(path_zip, dest_zip)
-                    return redirect(url_for('index'))
-                        #return render_template('/image_dropzone.html')
-
-        if ansy == 'on':
-            shutil.rmtree(front_folder)
-            shutil.rmtree(back_folder)
-            shutil.rmtree(SUCCESS_F)
-            shutil.rmtree(SUCCESS_B)
-            shutil.rmtree(UPLOAD_FOLDER)
-        return render_template('/thank-you.html', data=data)
-
-    return render_template('/thank-you.html', data=data)
-
-
-@app.route('/download-front.html', methods=["GET", "POST"])
-def download_front_images():
-
-    zip = 'front_images.zip'
-    path = os.path.join(CLEAN_FOLDER + zip)
-
-    return send_file(path, as_attachment=True, cache_timeout=0)
-
-@app.route('/download-back.html', methods=["GET", "POST"])
-def download_back_images():
-    zip = 'back_images.zip'
-    path = os.path.join(CLEAN_FOLDER + zip)
-
-    return send_file(path, as_attachment=True, cache_timeout=0)
-
-@app.route('/download-csv.html', methods=["GET", "POST"])
-def download_csv_file():
-    csv_file = 'output2.xlsx'
-    path = os.path.join(DOWNLOAD_FOLDER + csv_file)
-
-    return send_file(path, as_attachment=True, cache_timeout=0)
+def foldernames():
+    if not os.path.exists(CSV_FOLDER):
+        os.makedirs(CSV_FOLDER)
+        print('CSV_FOLDER folder created.')
+    if not os.path.exists(TEST):
+        os.makedirs(TEST)
+        print('TEST folder created.')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

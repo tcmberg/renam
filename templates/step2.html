@@ -22,9 +22,19 @@
     	<div class="container">
     		<div class="row">
           <div class="col-lg-12">
-            <h1>Did you upload your zip?</h1>
+
+              <form class="form-inline" method="POST" action="/step2">
+          <label class="file" for="cars">Front or Back Images?</label>
+
+            <select name="ffolder" id="ffolder">
+              <option value="set_front_images" name="set_front_images">Front</option>
+              <option value="set_back_images" name="set_back_images">Back</option>
+
+              </select>
+
+                <button type="submit" class="theme_btn" name="button">Continue</button>
             <br>
-            <a href="/step1"><div class="theme_btn" style="float:right;margin-top:15px">Continue</div></a>
+          </form>
 
 
         </div>
@@ -32,21 +42,5 @@
 </div>
 </section>
 
-
-    <section>
-    	<div class="container">
-    		<div class="row">
-          <div class="col-lg-12">
-            <div>
-              <ul>
-                {% for item in data %}
-                <li>{{item}}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
 {% endblock %}
