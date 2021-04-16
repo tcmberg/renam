@@ -158,7 +158,7 @@ def nextgen():
 
             set_front_images = request.form.get('ffolder')
             image_code = setup_front_images(set_front_images)
-            #print(image_code)
+        #   print(image_code)
 
             col_list = [input_gtin, input_1, input_2]
 
@@ -190,8 +190,6 @@ def download_images():
     return send_file(path, as_attachment=True, cache_timeout=0)
 
 
-
-
 def front_bitches(input_gtin, input_1, input_2, image_code):
     try:
         with open(CSV_FOLDER + 'compare.csv') as f, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
@@ -212,6 +210,7 @@ def front_bitches(input_gtin, input_1, input_2, image_code):
                     extension = os.path.splitext(filename)[1]
                     if input1 in filename and input2 in filename:
                     #    print(f'back image: {filename} ==> MATCH WITH {input1} and {input2} ')
+                        #print(image_code)
                         rename_string = '8712265000' + image_code + gtin + extension
                         old_file_loc = os.path.join(TEST, filename)
                         new_file_loc = os.path.join(TEST, rename_string)
