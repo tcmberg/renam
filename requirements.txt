@@ -88,7 +88,7 @@ tensorflow-estimator==1.14.0
 termcolor==1.1.0
 Twisted==20.3.0
 update-checker==0.17
-urllib3==1.25.8
+urllib3==1.26.5
 virtualenv==20.0.29
 visitor==0.1.3
 w3lib==1.22.0
