@@ -104,8 +104,11 @@ def uploadfile():
         return render_template('upload-2.html')
     elif request.method == 'POST':
         input_file = request.files["input_file"]
+
         df = pd.read_excel(input_file)
         df = df[df.columns.drop(list(df.filter(regex='koop|description|lengte|Unnamed|harmonised|btw')))]
+        pd.set_option('display.float_format', lambda x: '%.0f' % x)
+        print(df)
         df.to_csv(CSV_FOLDER + 'compare.csv', sep=',', encoding='utf-8', index=False, header=True)
         df.to_csv(CSV_FOLDER + 'original.csv', sep=',', encoding='utf-8', index=False, header=True)
         images = [x for x in os.listdir(TEST)[:5]]
@@ -161,14 +164,17 @@ def nextgen():
         #   print(image_code)
 
             col_list = [input_gtin, input_1, input_2]
+            pd.set_option('display.float_format', lambda x: '%.0f' % x)
 
             db2 = pd.read_csv(CSV_FOLDER + 'compare.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>3}'.format(x).lower(), input_2: lambda x: '{0:0>2}'.format(x).lower()})
-            db2[input_gtin] = db2[input_gtin].round().astype('Int64')
+
             db2.sort_values(input_1, ascending=True)
             db1 = db2.drop_duplicates(subset=[input_1])
 
             csv_filename = 'compare.csv'
             csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
+            pd.set_option('display.float_format', lambda x: '%.0f' % x)
+
             db1.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
 
             front_bitches(input_gtin, input_1, input_2, image_code)
@@ -193,7 +199,7 @@ def download_images():
 def front_bitches(input_gtin, input_1, input_2, image_code):
     try:
         with open(CSV_FOLDER + 'compare.csv') as f, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
-            reader = csv.reader(f, delimiter=',')
+            reader = csv.reader(f, delimiter='')
             writer_back = csv.writer(b_output)
             writer_back.writerow(['filename', input_1, input_2, 'new_string', 'full_match'])
             next(reader)
