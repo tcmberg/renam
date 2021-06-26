@@ -49,7 +49,7 @@ def index():
     return render_template('image_dropzone.html')
 
 
-@app.route('/step1', methods=['GET', 'POST'])
+@app.route('/step2', methods=['GET', 'POST'])
 def testing_html():
     try:
         for filename in os.listdir(MAIN_FOLDER):
@@ -77,6 +77,11 @@ def testing_html():
                     shutil.move(src,dst)
 
                 return render_template('upload-2.html')
+        else:
+            alertmessage = 'no zip found'
+            #print(alertmessage)
+            return render_template('upload-2.html')
+            #return render_template('image_dropzone.html', alertmessage=alertmessage)
 
     except Exception as e:
         print(e)
@@ -86,15 +91,15 @@ def testing_html():
 
     return render_template('image_dropzone.html')
 
-@app.route('/step2', methods=["GET", "POST"])
-def set_front_or_back_images():
-    if request.method == 'GET':
-        return render_template('step2.html')
-    elif request.method == 'POST':
-            set_front_images = request.form.get('ffolder')
-            print(set_front_images)
 
-    return render_template('step2.html')
+# def set_front_or_back_images():
+#     if request.method == 'GET':
+#         return render_template('step2.html')
+#     elif request.method == 'POST':
+#             set_front_images = request.form.get('ffolder')
+#             print(set_front_images)
+#
+#     return render_template('step2.html')
 
 
 @app.route('/step3', methods=["GET", "POST"])
@@ -105,14 +110,15 @@ def uploadfile():
     elif request.method == 'POST':
         input_file = request.files["input_file"]
 
+
         df = pd.read_excel(input_file)
         df = df[df.columns.drop(list(df.filter(regex='koop|description|lengte|Unnamed|harmonised|btw')))]
-        pd.set_option('display.float_format', lambda x: '%.0f' % x)
-        print(df)
-        df.to_csv(CSV_FOLDER + 'compare.csv', sep=',', encoding='utf-8', index=False, header=True)
-        df.to_csv(CSV_FOLDER + 'original.csv', sep=',', encoding='utf-8', index=False, header=True)
+        pd.set_option('precision', 0)
+
+        df.to_csv(CSV_FOLDER + 'compare.csv', sep=',', encoding='utf-8', index=False, header=True, float_format='%g')
+        df.to_csv(CSV_FOLDER + 'original.csv', sep=',', encoding='utf-8', index=False, header=True, float_format='%g')
         images = [x for x in os.listdir(TEST)[:5]]
-        return render_template('upload-2.html', tables=[df.to_html(classes='data', max_rows=5)], titles=df.columns.values, data=images)
+        return render_template('upload-2.html', tables=[df.to_html(classes='data', max_rows=15)], titles=df.columns.values, data=images)
 
 
 def setup_front_images(set_front_images):
@@ -162,28 +168,33 @@ def nextgen():
             set_front_images = request.form.get('ffolder')
             image_code = setup_front_images(set_front_images)
         #   print(image_code)
+            pd.set_option('precision', 0)
 
             col_list = [input_gtin, input_1, input_2]
-            pd.set_option('display.float_format', lambda x: '%.0f' % x)
-
             db2 = pd.read_csv(CSV_FOLDER + 'compare.csv', delimiter=',', usecols=col_list, converters={input_1: lambda x: '{0:0>3}'.format(x).lower(), input_2: lambda x: '{0:0>2}'.format(x).lower()})
+
+            db2[input_gtin] = db2[input_gtin].round().astype('Int64')
 
             db2.sort_values(input_1, ascending=True)
             db1 = db2.drop_duplicates(subset=[input_1])
 
+
+
             csv_filename = 'compare.csv'
             csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
-            pd.set_option('display.float_format', lambda x: '%.0f' % x)
 
             db1.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
-
+            print(db1)
             front_bitches(input_gtin, input_1, input_2, image_code)
 
             cleanup_list()
+            imagecount = len([x for x in os.listdir(TEST)])
             shutil.make_archive('images_' + str(random.randint(0, 999)), 'zip', TEST, MAIN_FOLDER)
             shutil.rmtree(TEST)
+            print(imagecount)
 
-            return render_template('thank-you.html')
+
+            return render_template('thank-you.html', imagecount=imagecount)
 
 
 @app.route('/download_images.html', methods=["GET", "POST"])
@@ -197,9 +208,10 @@ def download_images():
 
 
 def front_bitches(input_gtin, input_1, input_2, image_code):
+    print('start renaming')
     try:
         with open(CSV_FOLDER + 'compare.csv') as f, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
-            reader = csv.reader(f, delimiter='')
+            reader = csv.reader(f, delimiter=',')
             writer_back = csv.writer(b_output)
             writer_back.writerow(['filename', input_1, input_2, 'new_string', 'full_match'])
             next(reader)
@@ -215,7 +227,7 @@ def front_bitches(input_gtin, input_1, input_2, image_code):
                 for filename in os.listdir(TEST):
                     extension = os.path.splitext(filename)[1]
                     if input1 in filename and input2 in filename:
-                    #    print(f'back image: {filename} ==> MATCH WITH {input1} and {input2} ')
+                        #print(f'image: {filename} ==> MATCH WITH {input1} and {input2} ')
                         #print(image_code)
                         rename_string = '8712265000' + image_code + gtin + extension
                         old_file_loc = os.path.join(TEST, filename)
@@ -223,8 +235,10 @@ def front_bitches(input_gtin, input_1, input_2, image_code):
                         writer_back.writerow(row)
                         os.replace(old_file_loc, new_file_loc)
                         continue
-    except:
-        print('nothing')
+    except Exception as e:
+        print(e)
+        info = e
+        print(f'An error occurred. {info}')
 
     return 'done processing back images'
 

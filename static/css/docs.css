@@ -61,12 +61,7 @@ body {
 }
 
 /* Override for form controls */
-label,
-input,
-select,
-button {
-  font: 1rem/1.5 "Helvetica Neue", Arial, sans-serif;
-}
+
 
 a {
   text-decoration: none;
@@ -147,17 +142,7 @@ pre code {
   background-color: transparent;
   border: 0;
 }
-.highlight {
-  margin: 0 0 1rem;
-  padding: 1rem;
-  background-color: #f7f7f9;
-}
-.highlight pre {
-  margin-bottom: 0;
-}
-.highlight + .highlight {
-  margin-top: 1rem;
-}
+
 
 
 /*
@@ -175,54 +160,10 @@ pre code {
  * Masthead
  */
 
-.masthead {
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #eee;
-}
-.masthead h1 {
-  margin-bottom: .25rem;
-}
-.masthead .icon {
-  display: inline-block;
-  font-size: 3rem;
-}
-.masthead-links .icon {
-  font-size: 2rem;
-  margin-right: .5rem;
-}
-.masthead-links a {
-  color: #333;
-  text-decoration: none;
-  transition: all .15s linear;
-}
-.masthead-links a:hover {
-  color: #08c;
-}
-
 
 /*
  * Footer
  */
-
-.footer {
-  margin-top: 3rem;
-  padding: 3rem 1rem;
-  font-size: 90%;
-  text-align: center;
-  border-top: 1px solid #eee;
-}
-.footer p {
-  margin-bottom: .5rem;
-}
-
-.quick-links {
-  list-style: none;
-  margin-left: 0;
-}
-.quick-links li {
-  display: inline;
-}
-
 
 /*
  * Syntax highlighting

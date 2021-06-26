@@ -3,125 +3,96 @@
 {% block content %}
 
 
-<section class="banner_area">
-  <div class="container bdr">
-
+<div class="container-fluid">
     <div class="row">
-
       <div class="col-lg-12">
+        {% if tables %}
         <ul class="progressbar">
             <li class="active">Upload image as zip</li>
-            <li class="active">Indentify Back images</li>
             <li class="active">Upload your Excel file</li>
             <li>Indentify Excel file</li>
           </ul>
+       {% else %}
+            <ul class="progressbar">
+           <li class="active">Upload image as zip</li>
+           <li class="">Upload your Excel file</li>
+           <li>Indentify Excel file</li>
+         </ul>
+        {% endif %}
       </div>
-    </div>
-  </div>
-</section>
 
-<section>
-
-
-<div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-          <h1>Upload your Excel file:</h1>
-
+      <div class="col-lg-12 content-creation mx-auto">
+        <h1>Upload an Excel file:</h1>
+        <div class="spacing_area" style="margin-left:10%;">
           <form method="post" action="/step3" enctype="multipart/form-data" id="my-awesome-dropzone">
-    <table>
-      <tr>
-          <td><label class="file">
-            <input type="file" id="file" name="input_file" aria-label="File browser example">
-            <span class="file-custom"></span>
-          </label></td>
-          <td><input type="submit" class="theme_btn" value="Upload" /></td>
-    </tr>
-</table>
+            <table>
+              <tr>
+                <td><label class="file">
+                  <input type="file" id="file" name="input_file" aria-label="File browser example">
+                  <span class="file-custom"></span>
+                </label></td>
+                <td><input type="submit" class="theme_btn_medium" value="UPLOAD" /></td>
+              </tr>
+            </table>
         </form>
         </div>
-    </div>
-</div>
+        </div>
 
 
+{% for table in tables %}
+      <div class="col-lg-12 mx-auto content-creation">
+            <h3>PREVIEW</h3>
+
+            <div class="spacing_area" style="overflow-x:auto;">
+            {{ table|safe }}
+
+          </div>
+      </div>
+{% endfor %}
 
 
+{% if data %}
+      <div class="col-lg-12 content-creation">
+        <h3>Your uploaded images:</h3>
 
-  <div class="row">
-    <div class="col-lg-12">
-
-
-            <h2>Preview of uploaded file:</h2>
-            {% for table in tables %}
-               {{titles[loop.index]}}
-               {{ table|safe }}
+        <p>Do the images match with the Excel table?</p>
+        {% for item in data %}
+        <ul>
+            <li>{{item | safe}}</li>
             {% endfor %}
-
-
-</div>
-</div>
-
-<div class="container">
-  <div class="row">
-    <div class="col-lg-12">
-<h3>Your uploaded image:</h3>
-
-
-            {% for item in data %}
-                <li>{{item | safe}}</li>
-            {% endfor %}
-
-
-</div>
-</div>
-</div>
+        </ul>
+      </div>
+{% endif %}
 
 
 
-</section>
+      <div class="col-lg-12 content-creation">
+        <h2>Select the right values</h2>
+        <p>Match the Excel table fields with images.</p>
 
-<section>
-
-
-
-
-<div class="container">
-  <div class="row">
-    <div class="col-lg-12">
-
-            <h2>Please give inputs:</h2>
-
-
-<table style="width:100%">
-
-
-
+        <div class="row">
+        <table style="width:100%">
           <form class="form-inline" method="POST" action="/step4">
-<tr style="height:55px;">
-            <td><label class="file" for="cars">Front or Back Images?</label></td>
-
-          <td><select name="ffolder" id="ffolder">
-            <option value="set_front_images" name="set_front_images">Front</option>
-            <option value="set_back_images" name="set_back_images">Back</option>
-
-            </select></td>
-  </tr>
-
+            <tr style="height:55px;">
+              <td><label class="" for="">Front/Back</label></td>
+              <td><select name="ffolder" id="ffolder" class="select">
+                <option value="set_front_images" name="set_front_images">Front</option>
+                <option value="set_back_images" name="set_back_images">Back</option>
+              </select></td>
+          </tr>
           <tr style="height:55px;">
-          <div id="GTIN" style="margin-bottom:25px;">
-
-          <td><label for="gtin_in">Choose GTIN:</label></td>
-          <td><select class="select" name="gtin_in"  method="GET" action="/">
+            <div id="GTIN" style="margin-bottom:25px;">
+              <td><label for="gtin_in">GTIN:</label></td>
+              <td><select class="select" name="gtin_in"  method="GET" action="/">
               {% for title in titles %}
               <option value="{{title}}" SELECTED>{{title}}</option>
               {% endfor %}
-          </select></td>
+              </select></td>
           </div>
           </tr>
-
           <tr style="height:55px;">
           <div>
-          <td><label for="input_1">Choose SKU:</label></td>
+          <td><label for="input_1">SKU:</label></td>
           <td><select name="input_1" class="select" method="GET" action="/">
               {% for title in titles %}
               <option value="{{title}}" SELECTED>{{title}}</option>
@@ -129,10 +100,9 @@
           </select></td>
           </div>
           </tr>
-
           <tr style="height:55px;">
           <div>
-          <td><label for="input_2">Choose COLOR:</label></td>
+          <td><label for="input_2">COLOR:</label></td>
           <td><select name="input_2" class="select" method="GET" action="/">
               {% for title in titles %}
               <option value="{{title}}" SELECTED>{{title}}</option>
@@ -140,48 +110,29 @@
           </select></td>
           </div>
           </tr>
-          <tr>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-          <div>
-          <td></td>
-          <td><button type="submit" class="theme_btn" name="button">Finalize</button></td>
-          </div>
-          </tr>
-          </form>
 
-
-
-
-</table>
-
-          <div>
-              {% for item in images %}
-                  <li>{{item}}</li>
-              {% endfor %}
-
+          <div class="content-creation">
+        <button type="submit" class="theme_btn_large name="button">RENAME</button>
           </div>
 
-
-</div>
-</div>
-</div>
+        </form>
+    </table>
 
 
-<div class="container">
-  <div class="row">
-    <div class="col-lg-12">
-      <h4>Description:</h4>
-      <p>Select the EAN (GTIN) and choose two attributes containing the name. After this the images will be checked and renamed. </p>
-
-    </div>
 
   </div>
 
+
+
+
+  </div>
+    <div class="col-lg-12 content-creation">
+      <h4>Description:</h4>
+      <p>Select the EAN (GTIN) and choose two attributes containing the name. After this the images will be checked and renamed. </p>
+
+  </div>
+</div>
 </div>
 
-</section>
 
 {% endblock %}

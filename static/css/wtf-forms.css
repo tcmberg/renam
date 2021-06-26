@@ -106,6 +106,8 @@
   position: relative;
   display: inline-block;
   color: #555;
+  padding: 10px;
+  width: 50%;
 }
 .select select {
   display: inline-block;
@@ -222,6 +224,7 @@
   display: inline-block;
   cursor: pointer;
   height: 2.5rem;
+  margin-left: 300px;
 }
 .file input {
   min-width: 14rem;
@@ -249,7 +252,7 @@
           user-select: none;
 }
 .file-custom:after {
-  content: "Choose file...";
+  content: "Choose Excel file...";
 }
 .file-custom:before {
   position: absolute;

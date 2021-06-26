@@ -1,52 +1,46 @@
 {% extends "./base.html" %}
 
 {% block content %}
-    <section class="banner_area bdr">
-    	<div class="container bdr">
+<div class="container-fluid">
 
     		<div class="row">
-
     			<div class="col-lg-12">
             <ul class="progressbar">
                 <li class="">Upload image as zip</li>
-                <li>Indentify Back images</li>
                 <li>Upload your Excel file</li>
                 <li>Indentify Excel fiel</li>
               </ul>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section>
-    	<div class="container">
-    		<div class="row">
-          <div class="col-lg-12">
-            <h1>Did you upload your zip?</h1>
-            <br>
-            <a href="/step1"><div class="theme_btn" style="float:right;margin-top:15px">Continue</div></a>
+          <div class="row">
+            <div class="col-lg-12 content-creation">
+              {% if alertmessage %}
+              <div class="alert alert-warning mt-lg-1">
+            <strong>Warning!</strong> No zip file found!?
+            </div>
+              {% endif %}
 
 
-        </div>
-      </div>
-</div>
-</section>
+            <h1>Upload your image zip file to FTP</h1>
 
+            <p>Click start when all images are uploaded..</p>
 
-    <section>
-    	<div class="container">
-    		<div class="row">
-          <div class="col-lg-12">
-            <div>
+            <a href="/step2"><div class="theme_btn_large" style="font-size:20px;">START</div></a>
+          </div>
+            </div>
+
+            {% for item in data %}
+          <div class="row">
+            <div class="col-lg-12">
               <ul>
-                {% for item in data %}
-                <li>{{item}}</li>
-                {% endfor %}
+              <li>{{item}}</li>
+
               </ul>
             </div>
           </div>
+            {% endfor %}
         </div>
-      </div>
-    </section>
 
+
+</div> <!-- end container fluid -->
 {% endblock %}
