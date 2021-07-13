@@ -27,13 +27,27 @@
       <h4>DONE!</h4>
       <p>Total images renamed: {{ imagecount }}</p>
       <p>Please download url below:</p>
-      <a href="{{url_for( 'download_images')}}"> <button class="theme_btn_medium">DOWNLOAD</button></a><br>
+      <a href="{{url_for( 'download_images')}}"> <button class="theme_btn_medium">DOWNLOAD IMAGES</button></a>
+      <a href="{{url_for( 'download_csv')}}"> <button class="theme_btn_medium" style="background-color:#0d6efd !important;">DOWNLOAD CSV</button></a><br>
       {% else %}
       <h4>No matches found! 0 images renamed :(</h4>
       {% endif %}
-
-
     </div>
+
+
+    {% for table in tables %}
+          <div class="col-lg-12 mx-auto content-creation">
+                <h3>Images Done:</h3>
+                <div class="spacing_area" style="overflow-x:auto;align-text:center;">
+                {{ table|safe }}
+              </div>
+          </div>
+    {% endfor %}
+
+
+
+
+
     </div>
     </div>
 

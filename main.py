@@ -48,13 +48,22 @@ def index():
     foldernames()
     return render_template('image_dropzone.html')
 
+@app.route('/clean', methods=['GET', 'POST'])
+def clean_everything():
+    alertmessage = deletenames()
+    foldernames()
+    return render_template('image_dropzone.html', alertmessage=alertmessage)
+    #return render_template('image_dropzone.html')
+
+
+
 
 @app.route('/step2', methods=['GET', 'POST'])
 def testing_html():
     try:
         for filename in os.listdir(MAIN_FOLDER):
             path_zip = os.path.join(MAIN_FOLDER + filename)
-            if '.zip' in filename:
+            if '.zip' in filename and not 'images_' in filename:
                 zip_ref = zipfile.ZipFile(os.path.join(MAIN_FOLDER, filename), 'r')
 
                 with zip_ref as zip:
@@ -80,8 +89,8 @@ def testing_html():
         else:
             alertmessage = 'no zip found'
             #print(alertmessage)
-            return render_template('upload-2.html')
-            #return render_template('image_dropzone.html', alertmessage=alertmessage)
+            #return render_template('upload-2.html')
+            return render_template('image_dropzone.html', alertmessage=alertmessage)
 
     except Exception as e:
         print(e)
@@ -112,12 +121,12 @@ def uploadfile():
 
 
         df = pd.read_excel(input_file)
-        df = df[df.columns.drop(list(df.filter(regex='koop|description|lengte|Unnamed|harmonised|btw')))]
+        df = df[df.columns.drop(list(df.filter(regex='koop|description|lengte|Unnamed|harmonised|btw|brand|merk|cuntry|packed|delivery|verzending')))]
         pd.set_option('precision', 0)
 
         df.to_csv(CSV_FOLDER + 'compare.csv', sep=',', encoding='utf-8', index=False, header=True, float_format='%g')
         df.to_csv(CSV_FOLDER + 'original.csv', sep=',', encoding='utf-8', index=False, header=True, float_format='%g')
-        images = [x for x in os.listdir(TEST)[:5]]
+        images = [x for x in os.listdir(TEST)[:10]]
         return render_template('upload-2.html', tables=[df.to_html(classes='data', max_rows=15)], titles=df.columns.values, data=images)
 
 
@@ -148,7 +157,6 @@ def zip_file_finder():
         for filename in os.listdir(MAIN_FOLDER):
             if filename.startswith('images_'):
                 return filename
-
     except:
         print('.')
     return 'zip_file_downloader'
@@ -184,7 +192,7 @@ def nextgen():
             csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
 
             db1.to_csv(csv_fullname, sep=',', encoding='utf-8', columns=col_list, index=False, header=True)
-            print(db1)
+
             front_bitches(input_gtin, input_1, input_2, image_code)
 
             cleanup_list()
@@ -193,18 +201,27 @@ def nextgen():
             shutil.rmtree(TEST)
             print(imagecount)
 
+            db_out = pd.read_csv(CSV_FOLDER + 'back_output.csv', delimiter=',')
+            db_out_dup = db_out.drop_duplicates(subset=["EAN"])
 
-            return render_template('thank-you.html', imagecount=imagecount)
+        #    return render_template('thank-you.html', imagecount=imagecount)
+            return render_template('thank-you.html', imagecount=imagecount, tables=[db_out_dup.to_html(classes='data')], titles=db_out_dup.columns.values)
 
 
 @app.route('/download_images.html', methods=["GET", "POST"])
 def download_images():
-
     filename_zipper = zip_file_finder()
-
     path = os.path.join(CLEAN_FOLDER + filename_zipper)
-
     return send_file(path, as_attachment=True, cache_timeout=0)
+
+@app.route('/download_csv.html', methods=["GET", "POST"])
+def download_csv():
+    csv_filename = 'back_output.csv'
+    csv_fullname = os.path.join(CSV_FOLDER, csv_filename)
+    return send_file(csv_fullname, as_attachment=True, cache_timeout=0)
+
+
+
 
 
 def front_bitches(input_gtin, input_1, input_2, image_code):
@@ -213,7 +230,7 @@ def front_bitches(input_gtin, input_1, input_2, image_code):
         with open(CSV_FOLDER + 'compare.csv') as f, open(CSV_FOLDER + 'back_output.csv', 'w') as b_output:
             reader = csv.reader(f, delimiter=',')
             writer_back = csv.writer(b_output)
-            writer_back.writerow(['filename', input_1, input_2, 'new_string', 'full_match'])
+            writer_back.writerow(['EAN', input_1, input_2])
             next(reader)
 
             image_code = image_code
@@ -250,6 +267,23 @@ def foldernames():
     if not os.path.exists(TEST):
         os.makedirs(TEST)
         print('TEST folder created.')
+
+
+def deletenames():
+    try:
+        for filename in os.listdir(MAIN_FOLDER):
+            if filename.startswith('images_'):
+                alertmessage = 'image zip removed!'
+                os.remove(filename)
+                return alertmessage
+            else:
+                alertmessage = 'no image zipfile found'
+                return alertmessage
+
+    except Exception as e:
+        print(e)
+        info = e
+        print(f'An error occurred. {info}')
 
 
 if __name__ == '__main__':

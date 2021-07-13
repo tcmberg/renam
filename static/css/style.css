@@ -53,6 +53,8 @@ Table of Content:
   border-radius: 10px;
   min-width: 250px;
   border-width: 0px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .theme_btn_medium {
@@ -60,7 +62,6 @@ Table of Content:
   text-align: center;
   font: 400 18px/50px "Poppins", sans-serif;
   display: inline-block;
-  padding: 0 20px;
   background: #00CA4E;
   z-index: 1;
   border-radius: 5px;
@@ -82,21 +83,45 @@ Table of Content:
 }
 
 .table {
-  margin: auto;
+  margin: auto !important;
   /* width: calc(100% -40px); */
 }
 
-.theme_btn:hover, .theme_btn:focus {
-  background: darkblue;
+.theme_btn_medium:hover, .theme_btn:focus {
+  background: #006527;
   color: #fff;
+}
+
+.theme_btn_large:hover, .theme_btn:focus {
+  background: #006527;
+  color: #fff;
+}
+
+.warning {
+  background-color: #ff0000 !important;
+}
+.warning:hover {
+  background-color: #A30000 !important;
 }
 
 
 .dataframe th {
   background-color: #00CA4E;
   text-align:left;
+  font-size: 12px;
+  border-right: solid 1px #000;
+  border-left: solid 1px #000;
 }
 
+.dataframe {
+  font-size: 12px;
+  margin: auto !important;
+}
+
+.dataframe td {
+  border-right: solid 1px #000;
+  border-left: solid 1px #000;
+}
 
 
 /* CUSTOM CSS */
