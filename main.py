@@ -1,21 +1,13 @@
-from flask import Flask, make_response, request, render_template, redirect, url_for, session, send_file, after_this_request
-from werkzeug.utils import secure_filename
-import tempfile
-#from processing import process_data
+from flask import Flask, request, render_template, session, send_file
 import pandas as pd
 import csv
 import os
 import zipfile
 import shutil
-import re
-import glob
-import urllib,json
 import os
 import random
 
 from flask_dropzone import Dropzone
-
-import errno, stat
 
 app = Flask(__name__)
 
