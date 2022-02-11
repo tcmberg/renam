@@ -86,7 +86,7 @@ tensorboard==1.14.0
 tensorflow==1.14.0
 tensorflow-estimator==1.14.0
 termcolor==1.1.0
-Twisted==20.3.0
+Twisted==22.1.0
 update-checker==0.17
 urllib3==1.25.8
 virtualenv==20.0.29
